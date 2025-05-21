@@ -1,27 +1,85 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { IoIosPhonePortrait } from 'react-icons/io';
+import {
+  IoIosPhonePortrait,
+  IoMdMail,
+  IoLogoInstagram,
+  IoLogoYoutube,
+} from 'react-icons/io';
+import { IoLogoTiktok } from 'react-icons/io5';
 import { HiBars3 } from 'react-icons/hi2';
+import SocialLink from '@/app/ui/links/SocialLink';
 
 export default function ZNavbar() {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleScroll = () => {
+    const scrollTop = window.scrollY;
+
+    if (scrollTop > 298) {
+      setIsScrolled(true);
+    } else {
+      setIsScrolled(false);
+    }
+  };
   return (
-    <div className='w-full flex flex-col absolute top-0 left-0 right-0 z-50'>
+    <div
+      className={`w-full flex flex-col fixed top-0 left-0 right-0 z-50 ${
+        isScrolled
+          ? 'bg-black/50 backdrop-blur-md shadow-sm shadow-black'
+          : 'bg-transparent'
+      } transition-all duration-300`}
+    >
       <div className='w-full flex items-center justify-between'>
-        <div className='w-full max-w-7xl py-4 border-b-1 border-amber-100/25 mx-auto flex items-center justify-between'>
+        <div
+          className={`w-full max-w-7xl border-b-1 border-amber-100/25 mx-auto flex items-center justify-between ${
+            isScrolled ? 'py-1 px-4 xl:px-0' : 'py-4 px-4 xl:px-0'
+          } transition-all duration-300`}
+        >
           <Link href='/' className='flex items-center'>
             <Image
               src='/images/z_vlht_logo.png'
               alt='logo'
               width={70}
               height={40}
+              className={`${
+                isScrolled
+                  ? 'w-[46.67px] h-[32px] md:w-[46.67px] md:h-[32px]'
+                  : 'w-[46.67px] h-[32px] md:w-[70px] md:h-[48px]'
+              } transition-all duration-300`}
             />
-            <div className='flex flex-col items-end ml-1.5 text-white'>
-              <p className='text-2xl font-bold mt-3'>VEGAS LUXURY</p>
-              <p className='opacity-70 text-sm -mt-1'>Home Tours</p>
+            <div
+              className={`hidden md:flex ml-1.5 text-white ${
+                isScrolled ? 'flex-row items-center' : 'flex-col items-end'
+              } transition-all duration-300`}
+            >
+              <p
+                className={`font-bold ${
+                  isScrolled ? 'text-lg' : 'text-2xl mt-3'
+                } transition-all duration-300`}
+              >
+                VEGAS LUXURY
+              </p>
+              <p
+                className={`opacity-70 ${
+                  isScrolled ? 'text-xs mt-1 ml-1' : 'text-sm -mt-1'
+                } transition-all duration-300`}
+              >
+                Home Tours
+              </p>
             </div>
           </Link>
           <div className='flex items-center text-white'>
-            <div className='flex flex-col items-end'>
+            <div className='hidden md:flex flex-col items-end'>
               <Link
                 href='tel:+17024177839'
                 className='font-bold hover:text-amber-300 transition-colors duration-300'
@@ -35,46 +93,88 @@ export default function ZNavbar() {
                 vegasluxuryhometours@aol.com
               </Link>
             </div>
-            <IoIosPhonePortrait size={40} className='mr-8' />
-            <div className='flex items-center px-1 text-white border-l-1 border-amber-100/25'>
-              <HiBars3
-                size={40}
-                className='ml-8 cursor-pointer hover:text-amber-300 transition-colors duration-300'
-              />
+            <Link href='tel:+17024177839' className='hidden md:block mr-8'>
+              <IoIosPhonePortrait size={40} />
+            </Link>
+            <div className='flex items-center text-white md:border-l-1 border-amber-100/25'>
+              <HiBars3 className='w-8 h-8 md:w-10 md:h-10 ml-8 cursor-pointer hover:text-amber-300 transition-colors duration-300' />
             </div>
           </div>
         </div>
       </div>
-      <div className='w-full max-w-7xl grid grid-cols-2 mx-auto'>
-        <div className='col-span-1'></div>
-        <nav className='col-span-1 flex items-center justify-end text-white font-bold'>
+      <div className='grid w-full max-w-7xl px-4 xl:px-0 grid-cols-1 md:grid-cols-2 mx-auto'>
+        <div className='col-span-1 flex justify-center md:justify-start'>
+          <div
+            className={`flex items-center text-white ${
+              isScrolled ? 'py-1' : 'py-4'
+            } transition-all duration-300`}
+          >
+            <SocialLink
+              href='https://www.instagram.com/lasvegasluxuryhometours/'
+              icon={<IoLogoInstagram size={24} />}
+              className='mr-6'
+            />
+            <SocialLink
+              href='https://www.youtube.com/channel/UC7EEt0BXJDJIgfGKEHzeVKw'
+              icon={<IoLogoYoutube size={24} />}
+              className='mr-6'
+            />
+            <SocialLink
+              href='https://www.tiktok.com/@las_vegasrealestate?_t=ZT-8wME5QcigEV&_r=1'
+              icon={<IoLogoTiktok size={24} />}
+              className='mr-6'
+            />
+            <Link
+              href='mailto:vegasluxuryhometours@aol.com'
+              className='block md:hidden ml-6'
+            >
+              <IoMdMail size={24} />
+            </Link>
+            <Link href='tel:+17024177839' className='block md:hidden ml-6'>
+              <IoIosPhonePortrait size={24} />
+            </Link>
+          </div>
+        </div>
+        <nav
+          className={`hidden md:flex col-span-1 items-center justify-end text-white font-bold`}
+        >
           <Link
             href='/about'
-            className='pt-4 hover:text-amber-300 border-t border-transparent hover:border-amber-300 transition-all duration-300'
+            className={`hover:text-amber-300 border-t border-transparent hover:border-amber-300 transition-all duration-300 ${
+              isScrolled ? 'py-1' : 'py-4'
+            } transition-all duration-300`}
           >
             ABOUT
           </Link>
           <Link
             href='/reviews'
-            className='pt-4 ml-16 hover:text-amber-300 border-t border-transparent hover:border-amber-300 transition-all duration-300'
+            className={`ml-16 hover:text-amber-300 border-t border-transparent hover:border-amber-300 transition-all duration-300 ${
+              isScrolled ? 'py-1' : 'py-4'
+            } transition-all duration-300`}
           >
             REVIEWS
           </Link>
           <Link
             href='/blog'
-            className='pt-4 ml-16 hover:text-amber-300 border-t border-transparent hover:border-amber-300 transition-all duration-300'
+            className={`ml-16 hover:text-amber-300 border-t border-transparent hover:border-amber-300 transition-all duration-300 ${
+              isScrolled ? 'py-1' : 'py-4'
+            } transition-all duration-300`}
           >
             BLOG
           </Link>
           <Link
             href='/feed'
-            className='pt-4 ml-16 hover:text-amber-300 border-t border-transparent hover:border-amber-300 transition-all duration-300'
+            className={`ml-16 hover:text-amber-300 border-t border-transparent hover:border-amber-300 transition-all duration-300 ${
+              isScrolled ? 'py-1' : 'py-4'
+            } transition-all duration-300`}
           >
             FEED
           </Link>
           <Link
             href='/contact'
-            className='pt-4 ml-16 hover:text-amber-300 border-t border-transparent hover:border-amber-300 transition-all duration-300'
+            className={`ml-16 hover:text-amber-300 border-t border-transparent hover:border-amber-300 transition-all duration-300 ${
+              isScrolled ? 'py-1' : 'py-4'
+            } transition-all duration-300`}
           >
             CONTACT
           </Link>
