@@ -25,7 +25,7 @@ export default function ZNavbar() {
   const handleScroll = () => {
     const scrollTop = window.scrollY;
 
-    if (scrollTop > 298) {
+    if (scrollTop > 69) {
       setIsScrolled(true);
     } else {
       setIsScrolled(false);
@@ -35,7 +35,7 @@ export default function ZNavbar() {
     <div
       className={`w-full flex flex-col fixed top-0 left-0 right-0 z-50 ${
         isScrolled
-          ? 'bg-black/50 backdrop-blur-md shadow-sm shadow-black'
+          ? 'bg-blue-950/50 backdrop-blur-md shadow-md shadow-black'
           : 'bg-transparent'
       } transition-all duration-300`}
     >
@@ -105,34 +105,32 @@ export default function ZNavbar() {
       <div className='grid w-full max-w-7xl px-4 xl:px-0 grid-cols-1 md:grid-cols-2 mx-auto'>
         <div className='col-span-1 flex justify-center md:justify-start'>
           <div
-            className={`flex items-center text-white ${
+            className={`flex gap-6 ${
               isScrolled ? 'py-1' : 'py-4'
             } transition-all duration-300`}
           >
             <SocialLink
               href='https://www.instagram.com/lasvegasluxuryhometours/'
               icon={<IoLogoInstagram size={24} />}
-              className='mr-6'
             />
             <SocialLink
               href='https://www.youtube.com/channel/UC7EEt0BXJDJIgfGKEHzeVKw'
               icon={<IoLogoYoutube size={24} />}
-              className='mr-6'
             />
             <SocialLink
               href='https://www.tiktok.com/@las_vegasrealestate?_t=ZT-8wME5QcigEV&_r=1'
               icon={<IoLogoTiktok size={24} />}
-              className='mr-6'
             />
-            <Link
+            <SocialLink
               href='mailto:vegasluxuryhometours@aol.com'
-              className='block md:hidden ml-6'
-            >
-              <IoMdMail size={24} />
-            </Link>
-            <Link href='tel:+17024177839' className='block md:hidden ml-6'>
-              <IoIosPhonePortrait size={24} />
-            </Link>
+              icon={<IoMdMail size={24} />}
+              className='block md:hidden'
+            />
+            <SocialLink
+              href='tel:+17024177839'
+              icon={<IoIosPhonePortrait size={24} />}
+              className='block md:hidden'
+            />
           </div>
         </div>
         <nav

@@ -11,7 +11,7 @@ export default function SocialLink({ href, icon, className }: SocialLinkProps) {
     <Link
       href={href}
       target='_blank'
-      className={`hover:text-amber-300 transition-colors duration-300 ${className}`}
+      className={`text-white hover:text-amber-300 transition-colors duration-300 ${className}`}
     >
       {icon}
     </Link>
