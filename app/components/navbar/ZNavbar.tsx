@@ -1,8 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { User } from '@supabase/supabase-js';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import AuthNav from './AuthNav';
+// import { logoutAction } from '@/app/lib/actions/actions';
+import SocialLink from '@/app/ui/links/SocialLink';
 import {
   IoIosPhonePortrait,
   IoMdMail,
@@ -11,10 +16,19 @@ import {
 } from 'react-icons/io';
 import { IoLogoTiktok } from 'react-icons/io5';
 import { HiBars3 } from 'react-icons/hi2';
-import SocialLink from '@/app/ui/links/SocialLink';
 
-export default function ZNavbar() {
+interface NavbarProps {
+  user: User | null;
+}
+
+export default function ZNavbar({ user }: NavbarProps) {
+  const pathname = usePathname();
+
   const [isScrolled, setIsScrolled] = useState(false);
+
+  // const handleLogout = async () => {
+  //   await logoutAction();
+  // };
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
@@ -31,6 +45,16 @@ export default function ZNavbar() {
       setIsScrolled(false);
     }
   };
+
+  if (
+    pathname === '/signup' ||
+    pathname === '/login' ||
+    pathname === '/verify-email' ||
+    pathname.startsWith('/dashboard')
+  ) {
+    return <AuthNav pathname={pathname} user={user} />;
+  }
+
   return (
     <div
       className={`w-full flex flex-col fixed top-0 left-0 right-0 z-50 ${

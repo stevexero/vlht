@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono, Allura, Rajdhani } from 'next/font/google';
-import './globals.css';
-// import Navbar from './components/navbar/Navbar';
-import Footer from './components/footer/Footer';
+import { createClient } from './lib/supabase/server';
+import ZFooter from './components/footer/ZFooter';
 import ZNavbar from './components/navbar/ZNavbar';
+import './globals.css';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -33,19 +33,25 @@ export const metadata: Metadata = {
   description: 'Experience the best of Vegas with our luxury home tours',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <html lang='en'>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${allura.variable} ${rajdhani.variable} antialiased relative`}
+        className={`${geistSans.variable} ${geistMono.variable} ${allura.variable} ${rajdhani.variable} min-h-screen antialiased flex flex-col`}
       >
-        <ZNavbar />
-        {children}
-        <Footer />
+        <ZNavbar user={user} />
+        <main className='flex-grow bg-gray-100'>{children}</main>
+        <ZFooter user={user} />
       </body>
     </html>
   );

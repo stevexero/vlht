@@ -7,7 +7,7 @@ import ZHero from './components/hero/ZHero';
 
 export default function Home() {
   return (
-    <main>
+    <main className='w-full'>
       {/* <Hero logo='/images/vlht_logo.png' /> */}
       <ZHero />
       <SubHero />
