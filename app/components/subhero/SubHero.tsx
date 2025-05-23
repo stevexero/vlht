@@ -10,21 +10,19 @@ const SubHero = () => {
         <div className='w-full md:w-[55%] flex flex-col items-center md:items-start justify-between h-[19rem]'>
           <div className='flex items-center -mt-8'>
             <Image
-              src='/images/champagne.svg'
+              src='/images/champagne.png'
               alt='Champagne Bottle'
-              width={105}
-              height={105}
-              className='hidden md:block -ml-3'
+              width={100}
+              height={100}
+              className='hidden md:block -ml-3 opacity-50 saturate-50'
             />
-            <h1
-              className='font-cinzel text-gray-200 ml-4 sm:text-[30px] md:text-[36px] lg:text-[56px] sm:mb-8 md:mb-0
-                [&>span]:font-cinzel [&>span]:font-bold [&>span]:text-amber-600'
-            >
-              A Taste of <span>VIP</span>
+            <h1 className='text-blue-800/50 ml-4 sm:text-[30px] md:text-[36px] lg:text-[56px] sm:mb-8 md:mb-0'>
+              A Taste of&nbsp;
+              <span className='text-amber-400 font-bold'>VIP</span>
             </h1>
           </div>
           <div className='w-full'>
-            <p className='font-montserrat text-sm text-gray-600 md:-mt-8 md:mr-8 md:text-left text-justify sm:px-10 md:px-0'>
+            <p className='text-blue-950/80 md:-mt-8 md:mr-8 md:text-left text-justify sm:px-10 md:px-0'>
               Whether you are looking to invest in Vegas real estate or just
               want to get a taste of how the locals live while seeing some
               beautiful homes, we are happy to give you a personalized tour! Get

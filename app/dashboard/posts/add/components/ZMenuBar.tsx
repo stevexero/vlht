@@ -9,6 +9,7 @@ import {
   IoCode,
   IoLinkSharp,
   IoImageSharp,
+  IoColorPaletteSharp,
 } from 'react-icons/io5';
 import {
   ImBold,
@@ -39,6 +40,7 @@ import { BsEmojiSmile, BsFileBreak } from 'react-icons/bs';
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 import { usePostsStore } from '../postsStore';
 import { LiaWindowMinimize } from 'react-icons/lia';
+import { BiCodeBlock } from 'react-icons/bi';
 
 type MenuBarProps = { editor: Editor | null };
 
@@ -64,7 +66,7 @@ export default function ZMenuBar({ editor }: MenuBarProps) {
 
   const setLink = () => {
     const url = window.prompt('Enter the URL');
-    if (url === null) return; // User canceled
+    if (url === null) return;
     if (url === '') {
       editor.chain().focus().unsetLink().run();
     } else {
@@ -86,7 +88,7 @@ export default function ZMenuBar({ editor }: MenuBarProps) {
 
   const insertEmoji = (emojiData: EmojiClickData) => {
     editor.chain().focus().insertContent(emojiData.emoji).run();
-    setShowEmojiPicker(false); // Close picker after selection
+    setShowEmojiPicker(false);
   };
 
   const handleEmojiButtonClick = (event: React.MouseEvent) => {
@@ -110,12 +112,12 @@ export default function ZMenuBar({ editor }: MenuBarProps) {
   };
 
   const headingOptions = [
-    { value: 'heading1', label: 'Heading 1', icon: <LuHeading1 /> },
-    { value: 'heading2', label: 'Heading 2', icon: <LuHeading2 /> },
-    { value: 'heading3', label: 'Heading 3', icon: <LuHeading3 /> },
-    { value: 'heading4', label: 'Heading 4', icon: <LuHeading4 /> },
-    { value: 'heading5', label: 'Heading 5', icon: <LuHeading5 /> },
-    { value: 'heading6', label: 'Heading 6', icon: <LuHeading6 /> },
+    { value: 'heading1', icon: <LuHeading1 /> },
+    { value: 'heading2', icon: <LuHeading2 /> },
+    { value: 'heading3', icon: <LuHeading3 /> },
+    { value: 'heading4', icon: <LuHeading4 /> },
+    { value: 'heading5', icon: <LuHeading5 /> },
+    { value: 'heading6', icon: <LuHeading6 /> },
   ];
 
   const getActiveHeading = () => {
@@ -172,348 +174,406 @@ export default function ZMenuBar({ editor }: MenuBarProps) {
         </button>
       </div>
 
-      {/* Headings Dropdown */}
-      <div className='relative'>
+      {/* Headings and Paragraph */}
+      <div className={`flex items-center gap-2 border-r border-gray-500 pr-2`}>
+        {/* Headings Dropdown */}
+        <div className='relative'>
+          <button
+            onClick={handleHeadingButtonClick}
+            className={`p-2 rounded is-dropdown ${
+              isHeadingActive
+                ? 'bg-amber-200 text-black'
+                : 'hover:bg-gray-700 hover:text-white'
+            } cursor-pointer`}
+            aria-label='Show headings'
+          >
+            {selectedOption.icon}
+          </button>
+          {showHeadingPicker &&
+            typeof window !== 'undefined' &&
+            createPortal(
+              <div
+                className='fixed inset-0 z-40'
+                onClick={() => setShowHeadingPicker(false)}
+              >
+                <div
+                  className='absolute'
+                  style={{
+                    top: `calc(${headingPickerPosition.top}px - 4px)`,
+                    left: `calc(${headingPickerPosition.right}px - 4px)`,
+                    zIndex: 41,
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className='bg-gradient-to-b from-gray-500 to-gray-700 border border-gray-400 shadow-xl shadow-black/50 rounded-b-lg mt-4 text-sm text-gray-100 py-2 px-1'>
+                    <button
+                      onClick={() => {
+                        editor
+                          .chain()
+                          .focus()
+                          .toggleHeading({ level: 1 })
+                          .run();
+                        setShowHeadingPicker(false);
+                      }}
+                      className={`p-2 rounded ${
+                        editor.isActive('heading', { level: 1 })
+                          ? 'bg-amber-200 text-black'
+                          : 'hover:bg-gray-600 hover:text-white'
+                      } cursor-pointer`}
+                      aria-label='Heading 1'
+                    >
+                      <LuHeading1 />
+                    </button>
+                    <button
+                      onClick={() => {
+                        editor
+                          .chain()
+                          .focus()
+                          .toggleHeading({ level: 2 })
+                          .run();
+                        setShowHeadingPicker(false);
+                      }}
+                      className={`p-2 rounded ${
+                        editor.isActive('heading', { level: 2 })
+                          ? 'bg-amber-200 text-black'
+                          : 'hover:bg-gray-600 hover:text-white'
+                      } cursor-pointer`}
+                      aria-label='Heading 2'
+                    >
+                      <LuHeading2 />
+                    </button>
+                    <button
+                      onClick={() => {
+                        editor
+                          .chain()
+                          .focus()
+                          .toggleHeading({ level: 3 })
+                          .run();
+                        setShowHeadingPicker(false);
+                      }}
+                      className={`p-2 rounded ${
+                        editor.isActive('heading', { level: 3 })
+                          ? 'bg-amber-200 text-black'
+                          : 'hover:bg-gray-600 hover:text-white'
+                      } cursor-pointer`}
+                      aria-label='Heading 3'
+                    >
+                      <LuHeading3 />
+                    </button>
+                    <button
+                      onClick={() => {
+                        editor
+                          .chain()
+                          .focus()
+                          .toggleHeading({ level: 4 })
+                          .run();
+                        setShowHeadingPicker(false);
+                      }}
+                      className={`p-2 rounded ${
+                        editor.isActive('heading', { level: 4 })
+                          ? 'bg-amber-200 text-black'
+                          : 'hover:bg-gray-600 hover:text-white'
+                      } cursor-pointer`}
+                      aria-label='Heading 4'
+                    >
+                      <LuHeading4 />
+                    </button>
+                    <button
+                      onClick={() => {
+                        editor
+                          .chain()
+                          .focus()
+                          .toggleHeading({ level: 5 })
+                          .run();
+                        setShowHeadingPicker(false);
+                      }}
+                      className={`p-2 rounded ${
+                        editor.isActive('heading', { level: 5 })
+                          ? 'bg-amber-200 text-black'
+                          : 'hover:bg-gray-600 hover:text-white'
+                      } cursor-pointer`}
+                      aria-label='Heading 5'
+                    >
+                      <LuHeading5 />
+                    </button>
+                    <button
+                      onClick={() => {
+                        editor
+                          .chain()
+                          .focus()
+                          .toggleHeading({ level: 6 })
+                          .run();
+                        setShowHeadingPicker(false);
+                      }}
+                      className={`p-2 rounded ${
+                        editor.isActive('heading', { level: 6 })
+                          ? 'bg-amber-200 text-black'
+                          : 'hover:bg-gray-600 hover:text-white'
+                      } cursor-pointer`}
+                      aria-label='Heading 6'
+                    >
+                      <LuHeading6 />
+                    </button>
+                  </div>
+                </div>
+              </div>,
+              document.body
+            )}
+        </div>
+
         <button
-          onClick={handleHeadingButtonClick}
+          onClick={() => editor.chain().focus().setParagraph().run()}
           className={`p-2 rounded ${
-            isHeadingActive
+            editor.isActive('paragraph')
               ? 'bg-amber-200 text-black'
               : 'hover:bg-gray-700 hover:text-white'
           } cursor-pointer`}
-          aria-label='Show headings'
+          aria-label='Paragraph'
         >
-          {selectedOption.icon}
+          <TfiParagraph />
         </button>
-        {showHeadingPicker &&
-          typeof window !== 'undefined' &&
-          createPortal(
-            <div
-              className='fixed inset-0 z-40'
-              onClick={() => setShowHeadingPicker(false)}
-            >
-              <div
-                className='absolute'
-                style={{
-                  top: `calc(${headingPickerPosition.top}px - 4px)`,
-                  left: `calc(${headingPickerPosition.right}px - 4px)`,
-                  zIndex: 41,
-                }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className='bg-gradient-to-b from-gray-500 to-gray-700 border border-gray-400 shadow-xl shadow-black/50 rounded-b-lg mt-4 text-sm text-gray-100 py-2 px-1'>
-                  <button
-                    onClick={() => {
-                      editor.chain().focus().toggleHeading({ level: 1 }).run();
-                      setShowHeadingPicker(false);
-                    }}
-                    className={`p-2 rounded ${
-                      editor.isActive('heading', { level: 1 })
-                        ? 'bg-amber-200 text-black'
-                        : 'hover:bg-gray-600 hover:text-white'
-                    } cursor-pointer`}
-                    aria-label='Heading 1'
-                  >
-                    <LuHeading1 />
-                  </button>
-                  <button
-                    onClick={() => {
-                      editor.chain().focus().toggleHeading({ level: 2 }).run();
-                      setShowHeadingPicker(false);
-                    }}
-                    className={`p-2 rounded ${
-                      editor.isActive('heading', { level: 2 })
-                        ? 'bg-amber-200 text-black'
-                        : 'hover:bg-gray-600 hover:text-white'
-                    } cursor-pointer`}
-                    aria-label='Heading 2'
-                  >
-                    <LuHeading2 />
-                  </button>
-                  <button
-                    onClick={() => {
-                      editor.chain().focus().toggleHeading({ level: 3 }).run();
-                      setShowHeadingPicker(false);
-                    }}
-                    className={`p-2 rounded ${
-                      editor.isActive('heading', { level: 3 })
-                        ? 'bg-amber-200 text-black'
-                        : 'hover:bg-gray-600 hover:text-white'
-                    } cursor-pointer`}
-                    aria-label='Heading 3'
-                  >
-                    <LuHeading3 />
-                  </button>
-                  <button
-                    onClick={() => {
-                      editor.chain().focus().toggleHeading({ level: 4 }).run();
-                      setShowHeadingPicker(false);
-                    }}
-                    className={`p-2 rounded ${
-                      editor.isActive('heading', { level: 4 })
-                        ? 'bg-amber-200 text-black'
-                        : 'hover:bg-gray-600 hover:text-white'
-                    } cursor-pointer`}
-                    aria-label='Heading 4'
-                  >
-                    <LuHeading4 />
-                  </button>
-                  <button
-                    onClick={() => {
-                      editor.chain().focus().toggleHeading({ level: 5 }).run();
-                      setShowHeadingPicker(false);
-                    }}
-                    className={`p-2 rounded ${
-                      editor.isActive('heading', { level: 5 })
-                        ? 'bg-amber-200 text-black'
-                        : 'hover:bg-gray-600 hover:text-white'
-                    } cursor-pointer`}
-                    aria-label='Heading 5'
-                  >
-                    <LuHeading5 />
-                  </button>
-                  <button
-                    onClick={() => {
-                      editor.chain().focus().toggleHeading({ level: 6 }).run();
-                      setShowHeadingPicker(false);
-                    }}
-                    className={`p-2 rounded ${
-                      editor.isActive('heading', { level: 6 })
-                        ? 'bg-amber-200 text-black'
-                        : 'hover:bg-gray-600 hover:text-white'
-                    } cursor-pointer`}
-                    aria-label='Heading 6'
-                  >
-                    <LuHeading6 />
-                  </button>
-                </div>
-              </div>
-            </div>,
-            document.body
-          )}
+
+        <button
+          onClick={() => editor.chain().focus().clearNodes().run()}
+          className={`${
+            isMenuBarMinimized
+              ? 'hidden'
+              : 'p-2 rounded hover:bg-gray-700 cursor-pointer hover:text-white'
+          }`}
+          aria-label='Clear nodes'
+        >
+          <TbClearFormatting />
+        </button>
       </div>
 
-      <button
-        onClick={() => editor.chain().focus().toggleBold().run()}
-        disabled={!editor.can().chain().focus().toggleBold().run()}
-        className={`p-2 rounded ${
-          editor.isActive('bold')
-            ? 'bg-amber-200 text-black'
-            : 'hover:bg-gray-700 hover:text-white'
-        } cursor-pointer`}
-        aria-label='Bold'
-      >
-        <ImBold />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleItalic().run()}
-        disabled={!editor.can().chain().focus().toggleItalic().run()}
-        className={`p-2 rounded ${
-          editor.isActive('italic')
-            ? 'bg-amber-200 text-black'
-            : 'hover:bg-gray-700 hover:text-white'
-        } cursor-pointer`}
-        aria-label='Italic'
-      >
-        <ImItalic />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleStrike().run()}
-        disabled={!editor.can().chain().focus().toggleStrike().run()}
-        className={`${
-          isMenuBarMinimized
-            ? 'hidden'
-            : `p-2 rounded ${
-                editor.isActive('strike')
-                  ? 'bg-amber-200 text-black'
-                  : 'hover:bg-gray-700 hover:text-white'
-              } cursor-pointer`
-        }`}
-        aria-label='Strikethrough'
-      >
-        <ImStrikethrough />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleCode().run()}
-        disabled={!editor.can().chain().focus().toggleCode().run()}
-        className={`${
-          isMenuBarMinimized
-            ? 'hidden'
-            : `p-2 rounded ${
-                editor.isActive('code')
-                  ? 'bg-amber-200 text-black'
-                  : 'hover:bg-gray-700 hover:text-white'
-              } cursor-pointer`
-        }`}
-        aria-label='Code'
-      >
-        <IoCode />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().unsetAllMarks().run()}
-        className={`${
-          isMenuBarMinimized
-            ? 'hidden'
-            : 'p-2 rounded hover:bg-gray-700 cursor-pointer hover:text-white'
-        }`}
-        aria-label='Clear formatting'
-      >
-        <ImClearFormatting />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().clearNodes().run()}
-        className={`${
-          isMenuBarMinimized
-            ? 'hidden'
-            : 'p-2 rounded hover:bg-gray-700 cursor-pointer hover:text-white'
-        }`}
-        aria-label='Clear nodes'
-      >
-        <TbClearFormatting />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().setParagraph().run()}
-        className={`p-2 rounded ${
-          editor.isActive('paragraph')
-            ? 'bg-amber-200 text-black'
-            : 'hover:bg-gray-700 hover:text-white'
-        } cursor-pointer`}
-        aria-label='Paragraph'
-      >
-        <TfiParagraph />
-      </button>
+      {/* Bold, Italic, Strikethrough, Clear Formatting */}
+      <div className={`flex items-center gap-2 border-r border-gray-500 pr-2`}>
+        <button
+          onClick={() => editor.chain().focus().toggleBold().run()}
+          disabled={!editor.can().chain().focus().toggleBold().run()}
+          className={`p-2 rounded ${
+            editor.isActive('bold')
+              ? 'bg-amber-200 text-black'
+              : 'hover:bg-gray-700 hover:text-white'
+          } cursor-pointer`}
+          aria-label='Bold'
+        >
+          <ImBold />
+        </button>
 
-      <button
-        onClick={() => editor.chain().focus().setTextAlign('left').run()}
-        className={`p-2 rounded ${
-          editor.isActive({ textAlign: 'left' })
-            ? 'bg-amber-200 text-black'
-            : 'hover:bg-gray-700 hover:text-white'
-        } cursor-pointer`}
-        aria-label='Align left'
-      >
-        <LuAlignLeft />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().setTextAlign('center').run()}
-        className={`p-2 rounded ${
-          editor.isActive({ textAlign: 'center' })
-            ? 'bg-amber-200 text-black'
-            : 'hover:bg-gray-700 hover:text-white'
-        } cursor-pointer`}
-        aria-label='Align center'
-      >
-        <LuAlignCenter />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().setTextAlign('right').run()}
-        className={`p-2 rounded ${
-          editor.isActive({ textAlign: 'right' })
-            ? 'bg-amber-200 text-black'
-            : 'hover:bg-gray-700 hover:text-white'
-        } cursor-pointer`}
-        aria-label='Align right'
-      >
-        <LuAlignRight />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().setTextAlign('justify').run()}
-        className={`p-2 rounded ${
-          editor.isActive({ textAlign: 'justify' })
-            ? 'bg-amber-200 text-black'
-            : 'hover:bg-gray-700 hover:text-white'
-        } cursor-pointer`}
-        aria-label='Justify'
-      >
-        <LuAlignJustify />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().unsetTextAlign().run()}
-        className={`${
-          isMenuBarMinimized
-            ? 'hidden'
-            : `p-2 rounded ${
-                editor.isActive({ textAlign: 'left' })
-                  ? 'hover:bg-gray-700 hover:text-white'
-                  : editor.isActive({ textAlign: 'center' })
-                  ? 'hover:bg-gray-700 hover:text-white'
-                  : editor.isActive({ textAlign: 'right' })
-                  ? 'hover:bg-gray-700 hover:text-white'
-                  : editor.isActive({ textAlign: 'justify' })
-                  ? 'hover:bg-gray-700 hover:text-white'
-                  : 'bg-amber-200 text-black'
-              } cursor-pointer`
-        }`}
-        aria-label='Unset text align'
-      >
-        <TbNotesOff />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleBulletList().run()}
-        className={`p-2 rounded ${
-          editor.isActive('bulletList')
-            ? 'bg-amber-200 text-black'
-            : 'hover:bg-gray-700 hover:text-white'
-        } cursor-pointer`}
-        aria-label='Bullet list'
-      >
-        <LuList />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        className={`p-2 rounded ${
-          editor.isActive('orderedList')
-            ? 'bg-amber-200 text-black'
-            : 'hover:bg-gray-700 hover:text-white'
-        } cursor-pointer`}
-        aria-label='Ordered list'
-      >
-        <LuListOrdered />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-        className={`p-2 rounded ${
-          editor.isActive('codeBlock')
-            ? 'bg-amber-200 text-black'
-            : 'hover:bg-gray-700 hover:text-white'
-        } cursor-pointer`}
-        aria-label='Code block'
-      >
-        <IoCode />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleBlockquote().run()}
-        className={`p-2 rounded ${
-          editor.isActive('blockquote')
-            ? 'bg-amber-200 text-black'
-            : 'hover:bg-gray-700 hover:text-white'
-        } cursor-pointer`}
-        aria-label='Blockquote'
-      >
-        <IoMdQuote />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().setHorizontalRule().run()}
-        className={`${
-          isMenuBarMinimized
-            ? 'hidden'
-            : 'p-2 rounded hover:bg-gray-700 cursor-pointer hover:text-white'
-        }`}
-        aria-label='Horizontal rule'
-      >
-        <LuSeparatorHorizontal />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().setHardBreak().run()}
-        className={`${
-          isMenuBarMinimized
-            ? 'hidden'
-            : 'p-2 rounded hover:bg-gray-700 cursor-pointer hover:text-white'
-        }`}
-        aria-label='Hard break'
-      >
-        <BsFileBreak />
-      </button>
+        <button
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+          disabled={!editor.can().chain().focus().toggleItalic().run()}
+          className={`p-2 rounded ${
+            editor.isActive('italic')
+              ? 'bg-amber-200 text-black'
+              : 'hover:bg-gray-700 hover:text-white'
+          } cursor-pointer`}
+          aria-label='Italic'
+        >
+          <ImItalic />
+        </button>
+
+        <button
+          onClick={() => editor.chain().focus().toggleStrike().run()}
+          disabled={!editor.can().chain().focus().toggleStrike().run()}
+          className={`${
+            isMenuBarMinimized
+              ? 'hidden'
+              : `p-2 rounded ${
+                  editor.isActive('strike')
+                    ? 'bg-amber-200 text-black'
+                    : 'hover:bg-gray-700 hover:text-white'
+                } cursor-pointer`
+          }`}
+          aria-label='Strikethrough'
+        >
+          <ImStrikethrough />
+        </button>
+
+        <button
+          onClick={() => editor.chain().focus().unsetAllMarks().run()}
+          className={`${
+            isMenuBarMinimized
+              ? 'hidden'
+              : 'p-2 rounded hover:bg-gray-700 cursor-pointer hover:text-white'
+          }`}
+          aria-label='Clear formatting'
+        >
+          <ImClearFormatting />
+        </button>
+      </div>
+
+      {/* Text Align */}
+      <div className={`flex items-center gap-2 border-r border-gray-500 pr-2`}>
+        <button
+          onClick={() => editor.chain().focus().setTextAlign('left').run()}
+          className={`p-2 rounded ${
+            editor.isActive({ textAlign: 'left' })
+              ? 'bg-amber-200 text-black'
+              : 'hover:bg-gray-700 hover:text-white'
+          } cursor-pointer`}
+          aria-label='Align left'
+        >
+          <LuAlignLeft />
+        </button>
+
+        <button
+          onClick={() => editor.chain().focus().setTextAlign('center').run()}
+          className={`p-2 rounded ${
+            editor.isActive({ textAlign: 'center' })
+              ? 'bg-amber-200 text-black'
+              : 'hover:bg-gray-700 hover:text-white'
+          } cursor-pointer`}
+          aria-label='Align center'
+        >
+          <LuAlignCenter />
+        </button>
+
+        <button
+          onClick={() => editor.chain().focus().setTextAlign('right').run()}
+          className={`p-2 rounded ${
+            editor.isActive({ textAlign: 'right' })
+              ? 'bg-amber-200 text-black'
+              : 'hover:bg-gray-700 hover:text-white'
+          } cursor-pointer`}
+          aria-label='Align right'
+        >
+          <LuAlignRight />
+        </button>
+
+        <button
+          onClick={() => editor.chain().focus().setTextAlign('justify').run()}
+          className={`p-2 rounded ${
+            editor.isActive({ textAlign: 'justify' })
+              ? 'bg-amber-200 text-black'
+              : 'hover:bg-gray-700 hover:text-white'
+          } cursor-pointer`}
+          aria-label='Justify'
+        >
+          <LuAlignJustify />
+        </button>
+
+        <button
+          onClick={() => editor.chain().focus().unsetTextAlign().run()}
+          className={`${
+            isMenuBarMinimized
+              ? 'hidden'
+              : `p-2 rounded ${
+                  editor.isActive({ textAlign: 'left' })
+                    ? 'hover:bg-gray-700 hover:text-white'
+                    : editor.isActive({ textAlign: 'center' })
+                    ? 'hover:bg-gray-700 hover:text-white'
+                    : editor.isActive({ textAlign: 'right' })
+                    ? 'hover:bg-gray-700 hover:text-white'
+                    : editor.isActive({ textAlign: 'justify' })
+                    ? 'hover:bg-gray-700 hover:text-white'
+                    : 'bg-amber-200 text-black'
+                } cursor-pointer`
+          }`}
+          aria-label='Unset text align'
+        >
+          <TbNotesOff />
+        </button>
+      </div>
+
+      {/* Lists */}
+      <div className={`flex items-center gap-2 border-r border-gray-500 pr-2`}>
+        <button
+          onClick={() => editor.chain().focus().toggleBulletList().run()}
+          className={`p-2 rounded ${
+            editor.isActive('bulletList')
+              ? 'bg-amber-200 text-black'
+              : 'hover:bg-gray-700 hover:text-white'
+          } cursor-pointer`}
+          aria-label='Bullet list'
+        >
+          <LuList />
+        </button>
+        <button
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+          className={`p-2 rounded ${
+            editor.isActive('orderedList')
+              ? 'bg-amber-200 text-black'
+              : 'hover:bg-gray-700 hover:text-white'
+          } cursor-pointer`}
+          aria-label='Ordered list'
+        >
+          <LuListOrdered />
+        </button>
+      </div>
+
+      {/* Code and Blockquote */}
+      <div className={`flex items-center gap-2 border-r border-gray-500 pr-2`}>
+        <button
+          onClick={() => editor.chain().focus().toggleCode().run()}
+          disabled={!editor.can().chain().focus().toggleCode().run()}
+          className={`${
+            isMenuBarMinimized
+              ? 'hidden'
+              : `p-2 rounded ${
+                  editor.isActive('code')
+                    ? 'bg-amber-200 text-black'
+                    : 'hover:bg-gray-700 hover:text-white'
+                } cursor-pointer`
+          }`}
+          aria-label='Code'
+        >
+          <IoCode />
+        </button>
+
+        <button
+          onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+          className={`p-2 rounded ${
+            editor.isActive('codeBlock')
+              ? 'bg-amber-200 text-black'
+              : 'hover:bg-gray-700 hover:text-white'
+          } cursor-pointer`}
+          aria-label='Code block'
+        >
+          <BiCodeBlock />
+        </button>
+
+        <button
+          onClick={() => editor.chain().focus().toggleBlockquote().run()}
+          className={`p-2 rounded ${
+            editor.isActive('blockquote')
+              ? 'bg-amber-200 text-black'
+              : 'hover:bg-gray-700 hover:text-white'
+          } cursor-pointer`}
+          aria-label='Blockquote'
+        >
+          <IoMdQuote />
+        </button>
+      </div>
+
+      {/* Horizontal Rule and Hard Break */}
+      <div className={`flex items-center gap-2 border-r border-gray-500 pr-2`}>
+        <button
+          onClick={() => editor.chain().focus().setHorizontalRule().run()}
+          className={`${
+            isMenuBarMinimized
+              ? 'hidden'
+              : 'p-2 rounded hover:bg-gray-700 cursor-pointer hover:text-white'
+          }`}
+          aria-label='Horizontal rule'
+        >
+          <LuSeparatorHorizontal />
+        </button>
+
+        <button
+          onClick={() => editor.chain().focus().setHardBreak().run()}
+          className={`${
+            isMenuBarMinimized
+              ? 'hidden'
+              : 'p-2 rounded hover:bg-gray-700 cursor-pointer hover:text-white'
+          }`}
+          aria-label='Hard break'
+        >
+          <BsFileBreak />
+        </button>
+      </div>
+
       <button
         onClick={setLink}
         className={`p-2 rounded ${
@@ -532,20 +592,32 @@ export default function ZMenuBar({ editor }: MenuBarProps) {
       >
         <IoImageSharp />
       </button>
-      <input
-        type='color'
-        onChange={setColor}
+
+      {/* Text Color Picker Icon button */}
+      <div
         className={`${
-          isMenuBarMinimized ? 'hidden' : 'p-1 rounded w-10 h-10 cursor-pointer'
+          isMenuBarMinimized ? 'hidden' : 'flex flex-col items-center mt-4'
         }`}
-        aria-label='Choose text color'
-      />
+      >
+        <label htmlFor='text-color-picker'>
+          <IoColorPaletteSharp />
+        </label>
+        <input
+          id='text-color-picker'
+          type='color'
+          onChange={setColor}
+          className={`${
+            isMenuBarMinimized ? 'hidden' : 'w-8 h-4 cursor-pointer'
+          }`}
+          aria-label='Choose text color'
+        />
+      </div>
 
       {/* Emoji Picker */}
       <div className={`${isMenuBarMinimized ? 'hidden' : 'relative'}`}>
         <button
           onClick={handleEmojiButtonClick}
-          className={`p-2 rounded ${
+          className={`p-2 rounded is-dropdown ${
             showEmojiPicker
               ? 'bg-amber-200 text-black'
               : 'hover:bg-gray-700 hover:text-white'
@@ -589,6 +661,7 @@ export default function ZMenuBar({ editor }: MenuBarProps) {
       >
         <LuMaximize />
       </button>
+
       {/* Minimize Menu Bar */}
       <button
         onClick={() => setIsMenuBarMinimized(!isMenuBarMinimized)}
