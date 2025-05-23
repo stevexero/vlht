@@ -38,7 +38,7 @@ export default function UserMenu({ user }: UserMenuProps) {
         onClick={() => setIsOpen(!isOpen)}
       />
       {isOpen && (
-        <div className='absolute top-full right-0 bg-white shadow-lg rounded-lg mt-4 text-sm text-gray-400 pb-2 px-1'>
+        <div className='absolute top-full right-0 bg-white shadow-lg rounded-lg mt-12 md:mt-4 text-sm text-gray-400 pb-2 px-1'>
           <div className='px-3 py-2 border-b border-gray-300'>
             <p className='text-gray-500'>{user?.email}</p>
           </div>

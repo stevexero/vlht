@@ -38,11 +38,17 @@ import {
 import { BsEmojiSmile, BsFileBreak } from 'react-icons/bs';
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 import { usePostsStore } from '../postsStore';
+import { LiaWindowMinimize } from 'react-icons/lia';
 
 type MenuBarProps = { editor: Editor | null };
 
 export default function ZMenuBar({ editor }: MenuBarProps) {
-  const { isFullScreen, setIsFullScreen } = usePostsStore();
+  const {
+    isFullScreen,
+    setIsFullScreen,
+    isMenuBarMinimized,
+    setIsMenuBarMinimized,
+  } = usePostsStore();
 
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [pickerPosition, setPickerPosition] = useState({ top: 0, right: 0 });
@@ -141,7 +147,13 @@ export default function ZMenuBar({ editor }: MenuBarProps) {
       } text-white`}
     >
       {/* Undo and Redo */}
-      <div className='flex items-center gap-2 border-r border-gray-500 pr-2'>
+      <div
+        className={`${
+          isMenuBarMinimized
+            ? 'hidden'
+            : 'flex items-center gap-2 border-r border-gray-500 pr-2'
+        }`}
+      >
         <button
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!editor.can().chain().focus().undo().run()}
@@ -308,11 +320,15 @@ export default function ZMenuBar({ editor }: MenuBarProps) {
       <button
         onClick={() => editor.chain().focus().toggleStrike().run()}
         disabled={!editor.can().chain().focus().toggleStrike().run()}
-        className={`p-2 rounded ${
-          editor.isActive('strike')
-            ? 'bg-amber-200 text-black'
-            : 'hover:bg-gray-700 hover:text-white'
-        } cursor-pointer`}
+        className={`${
+          isMenuBarMinimized
+            ? 'hidden'
+            : `p-2 rounded ${
+                editor.isActive('strike')
+                  ? 'bg-amber-200 text-black'
+                  : 'hover:bg-gray-700 hover:text-white'
+              } cursor-pointer`
+        }`}
         aria-label='Strikethrough'
       >
         <ImStrikethrough />
@@ -320,25 +336,37 @@ export default function ZMenuBar({ editor }: MenuBarProps) {
       <button
         onClick={() => editor.chain().focus().toggleCode().run()}
         disabled={!editor.can().chain().focus().toggleCode().run()}
-        className={`p-2 rounded ${
-          editor.isActive('code')
-            ? 'bg-amber-200 text-black'
-            : 'hover:bg-gray-700 hover:text-white'
-        } cursor-pointer`}
+        className={`${
+          isMenuBarMinimized
+            ? 'hidden'
+            : `p-2 rounded ${
+                editor.isActive('code')
+                  ? 'bg-amber-200 text-black'
+                  : 'hover:bg-gray-700 hover:text-white'
+              } cursor-pointer`
+        }`}
         aria-label='Code'
       >
         <IoCode />
       </button>
       <button
         onClick={() => editor.chain().focus().unsetAllMarks().run()}
-        className='p-2 rounded hover:bg-gray-700 cursor-pointer hover:text-white'
+        className={`${
+          isMenuBarMinimized
+            ? 'hidden'
+            : 'p-2 rounded hover:bg-gray-700 cursor-pointer hover:text-white'
+        }`}
         aria-label='Clear formatting'
       >
         <ImClearFormatting />
       </button>
       <button
         onClick={() => editor.chain().focus().clearNodes().run()}
-        className='p-2 rounded hover:bg-gray-700 cursor-pointer hover:text-white'
+        className={`${
+          isMenuBarMinimized
+            ? 'hidden'
+            : 'p-2 rounded hover:bg-gray-700 cursor-pointer hover:text-white'
+        }`}
         aria-label='Clear nodes'
       >
         <TbClearFormatting />
@@ -401,17 +429,21 @@ export default function ZMenuBar({ editor }: MenuBarProps) {
       </button>
       <button
         onClick={() => editor.chain().focus().unsetTextAlign().run()}
-        className={`p-2 rounded ${
-          editor.isActive({ textAlign: 'left' })
-            ? 'hover:bg-gray-700 hover:text-white'
-            : editor.isActive({ textAlign: 'center' })
-            ? 'hover:bg-gray-700 hover:text-white'
-            : editor.isActive({ textAlign: 'right' })
-            ? 'hover:bg-gray-700 hover:text-white'
-            : editor.isActive({ textAlign: 'justify' })
-            ? 'hover:bg-gray-700 hover:text-white'
-            : 'bg-amber-200 text-black'
-        } cursor-pointer`}
+        className={`${
+          isMenuBarMinimized
+            ? 'hidden'
+            : `p-2 rounded ${
+                editor.isActive({ textAlign: 'left' })
+                  ? 'hover:bg-gray-700 hover:text-white'
+                  : editor.isActive({ textAlign: 'center' })
+                  ? 'hover:bg-gray-700 hover:text-white'
+                  : editor.isActive({ textAlign: 'right' })
+                  ? 'hover:bg-gray-700 hover:text-white'
+                  : editor.isActive({ textAlign: 'justify' })
+                  ? 'hover:bg-gray-700 hover:text-white'
+                  : 'bg-amber-200 text-black'
+              } cursor-pointer`
+        }`}
         aria-label='Unset text align'
       >
         <TbNotesOff />
@@ -462,14 +494,22 @@ export default function ZMenuBar({ editor }: MenuBarProps) {
       </button>
       <button
         onClick={() => editor.chain().focus().setHorizontalRule().run()}
-        className='p-2 rounded hover:bg-gray-700 cursor-pointer hover:text-white'
+        className={`${
+          isMenuBarMinimized
+            ? 'hidden'
+            : 'p-2 rounded hover:bg-gray-700 cursor-pointer hover:text-white'
+        }`}
         aria-label='Horizontal rule'
       >
         <LuSeparatorHorizontal />
       </button>
       <button
         onClick={() => editor.chain().focus().setHardBreak().run()}
-        className='p-2 rounded hover:bg-gray-700 cursor-pointer hover:text-white'
+        className={`${
+          isMenuBarMinimized
+            ? 'hidden'
+            : 'p-2 rounded hover:bg-gray-700 cursor-pointer hover:text-white'
+        }`}
         aria-label='Hard break'
       >
         <BsFileBreak />
@@ -495,12 +535,14 @@ export default function ZMenuBar({ editor }: MenuBarProps) {
       <input
         type='color'
         onChange={setColor}
-        className='p-1 rounded w-10 h-10 cursor-pointer'
+        className={`${
+          isMenuBarMinimized ? 'hidden' : 'p-1 rounded w-10 h-10 cursor-pointer'
+        }`}
         aria-label='Choose text color'
       />
 
       {/* Emoji Picker */}
-      <div className='relative'>
+      <div className={`${isMenuBarMinimized ? 'hidden' : 'relative'}`}>
         <button
           onClick={handleEmojiButtonClick}
           className={`p-2 rounded ${
@@ -546,6 +588,14 @@ export default function ZMenuBar({ editor }: MenuBarProps) {
         aria-label='Full screen'
       >
         <LuMaximize />
+      </button>
+      {/* Minimize Menu Bar */}
+      <button
+        onClick={() => setIsMenuBarMinimized(!isMenuBarMinimized)}
+        className='block md:hidden p-2 rounded hover:bg-gray-700 cursor-pointer hover:text-white'
+        aria-label='Full screen'
+      >
+        <LiaWindowMinimize />
       </button>
     </div>
   );
