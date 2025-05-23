@@ -17,9 +17,11 @@ export default async function page() {
 
   return (
     <div className='w-full ml-8 md:ml-72 mt-24 md:mt-16'>
-      <Suspense fallback={<div>Loading...</div>}>
-        <ProfileCard user={user!} userProfile={userProfile} />
-      </Suspense>
+      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 mr-8'>
+        <Suspense fallback={<div>Loading...</div>}>
+          <ProfileCard user={user!} userProfile={userProfile} />
+        </Suspense>
+      </div>
     </div>
   );
 }

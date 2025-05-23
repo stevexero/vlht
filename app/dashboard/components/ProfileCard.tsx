@@ -15,7 +15,11 @@ export default function ProfileCard({
   };
 }) {
   if (!userProfile.success) {
-    return <div>Error: {userProfile.message}</div>;
+    return (
+      <div className='w-full flex flex-col items-center p-12 max-h-[566px] border border-slate-300 shadow-2xl shadow-slate-700 rounded-2xl'>
+        <p>Error: {userProfile.message}</p>
+      </div>
+    );
   }
 
   return (

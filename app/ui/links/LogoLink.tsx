@@ -14,7 +14,7 @@ export default function LogoLink({
 }: LogoLinkProps) {
   const content = (
     <Image
-      src='/images/z_vlht_logo.png'
+      src='/images/z_vlht_logo_dark.png'
       alt='Vegas Luxury Home Tours'
       width={70}
       height={40}
