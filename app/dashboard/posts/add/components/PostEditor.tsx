@@ -125,7 +125,7 @@ export const PostEditor = () => {
       >
         <div
           className={`col-span-3 bg-white rounded-lg ${
-            isFullScreen ? 'max-h-[100vh]' : 'max-h-[500px] md:max-h-[700px]'
+            isFullScreen ? 'h-[100vh]' : 'max-h-[500px] md:max-h-[700px]'
           }  flex flex-col transition-all duration-300`}
         >
           <div className='sticky top-0 border-gray-300'>
