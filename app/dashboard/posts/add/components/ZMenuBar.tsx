@@ -23,10 +23,15 @@ import HeadingsParagraph from './menuItems/HeadingsParagraph';
 import TextFormatting from './menuItems/TextFormatting';
 import TextAlign from './menuItems/TextAlign';
 import Lists from './menuItems/Lists';
+import Preview from './menuItems/Preview';
+import { User } from '@supabase/supabase-js';
 
-type MenuBarProps = { editor: Editor | null };
+interface MenuBarProps {
+  editor: Editor | null;
+  user: User;
+}
 
-export default function ZMenuBar({ editor }: MenuBarProps) {
+export default function ZMenuBar({ editor, user }: MenuBarProps) {
   const {
     isFullScreen,
     setIsFullScreen,
@@ -359,6 +364,9 @@ export default function ZMenuBar({ editor }: MenuBarProps) {
       >
         <VscClearAll />
       </button>
+
+      {/* Preview */}
+      <Preview editor={editor} user={user} />
     </div>
   );
 }

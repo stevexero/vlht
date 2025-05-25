@@ -132,3 +132,21 @@ export const resendVerificationEmailAction = async (email: string) => {
 
   return { message: 'Verification email sent' };
 };
+
+/***********************/
+/* Get User by Auth ID */
+/***********************/
+export const getUserByAuthIdAction = async (authId: string) => {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('id', authId)
+    .single();
+
+  if (error) {
+    return { success: false, error: error.message, data: null };
+  }
+
+  return { success: true, error: null, data };
+};

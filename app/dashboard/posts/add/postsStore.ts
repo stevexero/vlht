@@ -6,6 +6,9 @@ interface PostsStore {
 
   isMenuBarMinimized: boolean;
   setIsMenuBarMinimized: (isMenuBarMinimized: boolean) => void;
+
+  showPreview: boolean;
+  setShowPreview: (showPreview: boolean) => void;
 }
 
 export const usePostsStore = create<PostsStore>((set) => ({
@@ -14,4 +17,7 @@ export const usePostsStore = create<PostsStore>((set) => ({
 
   isMenuBarMinimized: false,
   setIsMenuBarMinimized: (isMenuBarMinimized) => set({ isMenuBarMinimized }),
+
+  showPreview: false,
+  setShowPreview: (showPreview) => set({ showPreview }),
 }));

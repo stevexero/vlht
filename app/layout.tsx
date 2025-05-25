@@ -4,6 +4,7 @@ import { createClient } from './lib/supabase/server';
 import ZFooter from './components/footer/ZFooter';
 import ZNavbar from './components/navbar/ZNavbar';
 import './globals.css';
+import ToastContainer from './ui/ToastContainer';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -50,6 +51,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${allura.variable} ${rajdhani.variable} min-h-screen antialiased flex flex-col`}
       >
         <ZNavbar user={user} />
+        <ToastContainer />
         <main className='flex-grow bg-gray-100'>{children}</main>
         <ZFooter user={user} />
       </body>

@@ -11,6 +11,7 @@ import Image from '@tiptap/extension-image';
 import '../styles.css';
 import ZMenuBar from './ZMenuBar';
 import { usePostsStore } from '../postsStore';
+import { User } from '@supabase/supabase-js';
 
 const extensions = [
   Color.configure({ types: [TextStyle.name, ListItem.name] }),
@@ -101,7 +102,7 @@ body {
 </blockquote>
 `;
 
-export const PostEditor = () => {
+export const PostEditor = ({ user }: { user: User }) => {
   const { isFullScreen } = usePostsStore();
 
   const editor = useEditor({
@@ -129,7 +130,7 @@ export const PostEditor = () => {
           }  flex flex-col transition-all duration-300`}
         >
           <div className='sticky top-0 border-gray-300'>
-            <ZMenuBar editor={editor} />
+            <ZMenuBar editor={editor} user={user} />
           </div>
           <div className='flex-1 overflow-y-auto p-4'>
             <EditorContent editor={editor} />
