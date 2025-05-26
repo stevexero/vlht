@@ -34,13 +34,17 @@ export default async function page() {
                   className='bg-white p-4 rounded-md shadow-md'
                 >
                   <h3 className='text-lg font-bold'>{post.title}</h3>
+                  <Link href={`/dashboard/posts/edit?id=${post.id}`}>
+                    <button className='bg-blue-500 text-white px-4 py-2 rounded-md'>
+                      Edit
+                    </button>
+                  </Link>
                 </div>
               ))}
             </div>
           </div>
-          {/* Drafts */}
           {/* Add Post */}
-          <Link href='/dashboard/posts/add'>
+          <Link href='/dashboard/posts/edit'>
             <button className='bg-blue-500 text-white px-4 py-2 rounded-md'>
               Add Post
             </button>

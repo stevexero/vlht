@@ -6,7 +6,7 @@ import { FaTimes } from 'react-icons/fa';
 import { useNavStore } from './navStore';
 import { IoMenu } from 'react-icons/io5';
 import SidebarList from './SidebarList';
-import { usePostsStore } from '@/app/dashboard/posts/add/postsStore';
+import { usePostsStore } from '@/app/store/store';
 
 export default function SideNav() {
   const { isOpen, setIsOpen } = useNavStore();

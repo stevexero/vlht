@@ -4,7 +4,7 @@ import { ImClearFormatting } from 'react-icons/im';
 import { ImBold, ImItalic, ImStrikethrough } from 'react-icons/im';
 import { Tooltip } from 'react-tooltip';
 import { Editor } from '@tiptap/react';
-import { usePostsStore } from '../../postsStore';
+import { usePostsStore } from '@/app/store/store';
 
 type MenuBarProps = { editor: Editor | null };
 

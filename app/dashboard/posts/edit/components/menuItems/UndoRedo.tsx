@@ -3,7 +3,7 @@
 import { IoArrowRedoSharp } from 'react-icons/io5';
 import { IoArrowUndoSharp } from 'react-icons/io5';
 import { Tooltip } from 'react-tooltip';
-import { usePostsStore } from '../../postsStore';
+import { usePostsStore } from '@/app/store/store';
 import { Editor } from '@tiptap/react';
 
 type MenuBarProps = { editor: Editor | null };

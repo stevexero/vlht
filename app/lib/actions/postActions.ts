@@ -39,9 +39,9 @@ export const getPostAction = async (userId: string, postId: string) => {
   return { success: true, error: null, data };
 };
 
-/********************/
+/************************/
 /* Create/Update a post */
-/********************/
+/************************/
 export const createPostAction = async (formData: FormData) => {
   const supabase = await createClient();
 
@@ -54,6 +54,7 @@ export const createPostAction = async (formData: FormData) => {
   }
 
   const author_id = user.id;
+  const id = formData.get('id')?.toString();
   const title = formData.get('title')?.toString();
   const content = formData.get('content')?.toString();
   const status = formData.get('status')?.toString();
@@ -75,6 +76,7 @@ export const createPostAction = async (formData: FormData) => {
     const { data, error } = await supabase
       .from('posts')
       .upsert({
+        id,
         author_id,
         title,
         content,

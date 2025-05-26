@@ -14,7 +14,7 @@ import {
 } from 'react-icons/lu';
 import { TbClearFormatting } from 'react-icons/tb';
 import { TfiParagraph } from 'react-icons/tfi';
-import { usePostsStore } from '../../postsStore';
+import { usePostsStore } from '@/app/store/store';
 
 type MenuBarProps = { editor: Editor | null };
 

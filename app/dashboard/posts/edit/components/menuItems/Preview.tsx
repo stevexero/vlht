@@ -1,18 +1,19 @@
 'use client';
 
 import { useEffect, useRef, useCallback } from 'react';
-import { usePostsStore } from '../../postsStore';
-import { IoClose, IoEyeSharp, IoSave, IoSend } from 'react-icons/io5';
+import { createPortal } from 'react-dom';
 import { Tooltip } from 'react-tooltip';
 import { Editor } from '@tiptap/react';
-import { createPortal } from 'react-dom';
 import toast from 'react-hot-toast';
-import { createPostAction } from '@/app/lib/actions/actions';
 import { createClient, User } from '@supabase/supabase-js';
+import { usePostsStore } from '@/app/store/store';
+import { createPostAction } from '@/app/lib/actions/actions';
+import { IoClose, IoEyeSharp, IoSave, IoSend } from 'react-icons/io5';
 
 interface PreviewProps {
   editor: Editor | null;
   user: User;
+  params?: { id: string } | null;
 }
 
 const supabase = createClient(
@@ -20,7 +21,7 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-export default function Preview({ editor, user }: PreviewProps) {
+export default function Preview({ editor, user, params }: PreviewProps) {
   const { showPreview, setShowPreview } = usePostsStore();
   const modalRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -66,6 +67,9 @@ export default function Preview({ editor, user }: PreviewProps) {
 
     try {
       const formData = new FormData();
+      if (params?.id) {
+        formData.append('id', params.id);
+      }
       formData.append('author_id', user.id);
       formData.append('title', title);
       formData.append('content', content);
@@ -115,6 +119,9 @@ export default function Preview({ editor, user }: PreviewProps) {
       }
 
       const formData = new FormData();
+      if (params?.id) {
+        formData.append('id', params.id);
+      }
       formData.append('author_id', user.id);
       formData.append('title', title);
       formData.append('content', content);

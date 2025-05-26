@@ -2,7 +2,7 @@
 
 import { Tooltip } from 'react-tooltip';
 import { Editor } from '@tiptap/react';
-import { usePostsStore } from '../../postsStore';
+import { usePostsStore } from '@/app/store/store';
 import {
   LuAlignCenter,
   LuAlignJustify,

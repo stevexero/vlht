@@ -1,5 +1,6 @@
 'use client';
 
+import { User } from '@supabase/supabase-js';
 import { Color } from '@tiptap/extension-color';
 import ListItem from '@tiptap/extension-list-item';
 import TextStyle from '@tiptap/extension-text-style';
@@ -8,10 +9,9 @@ import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
 import Image from '@tiptap/extension-image';
-import '../styles.css';
 import ZMenuBar from './ZMenuBar';
-import { usePostsStore } from '../postsStore';
-import { User } from '@supabase/supabase-js';
+import { usePostsStore } from '@/app/store/store';
+import '../styles.css';
 
 const extensions = [
   Color.configure({ types: [TextStyle.name, ListItem.name] }),
@@ -39,76 +39,22 @@ const extensions = [
   }),
 ];
 
-const content = `
-<h1 style="text-align: left;">
-  (h1) Welcome to the content editor!,
-</h1>
-<h2 style="text-align: right;">
-  (h2) This is a h2 heading,
-</h2>
-<h3 style="text-align: left;">
-  (h3) This is a h3 heading,
-</h3>
-<h4 style="text-align: left;">
-  (h4) This is a h4 heading,
-</h4>
-<h5 style="text-align: left;">
-  (h5) This is a h5 heading,
-</h5>
-<h6 style="text-align: left;">
-  (h6) This is a h6 heading,
-</h6>
-<p style="text-align: left;">
-  This is a paragraph.
-</p>
-<p style="text-align: left;">
-  This is <strong>bold and strong</strong>.
-</p>
-<p style="text-align: left;">
-  This is <em>italic and em</em>.
-</p>    
-<p style="text-align: left;">
-  This is <strong><em>bold and italic</em></strong>.
-</p>
-<ul style="text-align: left;">
-  <li>
-    This is a bullet list item.
-  </li>
-  <li>
-    This is another bullet list item.
-  </li>
-</ul>
-<ol style="text-align: left;">
-  <li>
-    This is a numbered list item.
-  </li>
-  <li>
-    This is another numbered list item.
-  </li>
-</ol>
-<a href="https://google.com" target="_blank">This is a link</a>
-<p style="text-align: left;">
-<pre><code class="language-css">// This is a code block
-body {
-  display: none;
-}</code></pre>
-<p style="text-align: left;">
-  Give it a <strong>try</strong> and <em>click around</em> a little bit.
-</p>
-<blockquote style="text-align: left;">
-  Wow, that's amazing! 👏
-  <br />
-  — RSDNT ONE
-</blockquote>
-`;
-
-export const PostEditor = ({ user }: { user: User }) => {
+export default function PostEditor({
+  user,
+  initialContent,
+  params,
+}: {
+  user: User;
+  initialContent: string;
+  params?: { id: string } | null;
+}) {
   const { isFullScreen } = usePostsStore();
 
   const editor = useEditor({
     extensions: extensions,
-    content: content,
+    content: initialContent,
   });
+
   return (
     <div
       className={`${
@@ -130,7 +76,7 @@ export const PostEditor = ({ user }: { user: User }) => {
           }  flex flex-col transition-all duration-300`}
         >
           <div className='sticky top-0 border-gray-300'>
-            <ZMenuBar editor={editor} user={user} />
+            <ZMenuBar editor={editor} user={user} params={params} />
           </div>
           <div className='flex-1 overflow-y-auto p-4'>
             <EditorContent editor={editor} />
@@ -139,6 +85,4 @@ export const PostEditor = ({ user }: { user: User }) => {
       </div>
     </div>
   );
-};
-
-export default PostEditor;
+}
