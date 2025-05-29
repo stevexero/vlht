@@ -8,10 +8,12 @@ import TextAlign from '@tiptap/extension-text-align';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
-import Image from '@tiptap/extension-image';
+// import Image from '@tiptap/extension-image';
+import ImageResize from 'tiptap-extension-resize-image';
 import ZMenuBar from './ZMenuBar';
 import { usePostsStore } from '@/app/store/store';
 import '../styles.css';
+import Todos from './Todos';
 
 const extensions = [
   Color.configure({ types: [TextStyle.name, ListItem.name] }),
@@ -30,8 +32,11 @@ const extensions = [
     openOnClick: false,
     autolink: true,
   }),
-  Image.configure({
-    inline: true,
+  // Image.configure({
+  //   inline: true,
+  // }),
+  ImageResize.configure({
+    allowBase64: false,
   }),
   TextAlign.configure({
     types: ['heading', 'paragraph'],
@@ -71,14 +76,17 @@ export default function PostEditor({
         } transition-all duration-300`}
       >
         <div
-          className={`col-span-3 bg-white rounded-lg ${
+          className={`col-span-3 bg-gray-300 rounded-lg ${
             isFullScreen ? 'h-[100vh]' : 'max-h-[500px] md:max-h-[700px]'
           }  flex flex-col transition-all duration-300`}
         >
           <div className='sticky top-0 border-gray-300'>
             <ZMenuBar editor={editor} user={user} params={params} />
           </div>
-          <div className='flex-1 overflow-y-auto p-4'>
+          <div className='sticky top-12 border-gray-300'>
+            <Todos editor={editor} />
+          </div>
+          <div className='w-full max-w-[836px] mx-auto bg-white flex-1 overflow-y-auto p-4 mb-4'>
             <EditorContent editor={editor} />
           </div>
         </div>

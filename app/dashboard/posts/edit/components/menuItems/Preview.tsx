@@ -5,21 +5,22 @@ import { createPortal } from 'react-dom';
 import { Tooltip } from 'react-tooltip';
 import { Editor } from '@tiptap/react';
 import toast from 'react-hot-toast';
-import { createClient, User } from '@supabase/supabase-js';
 import { usePostsStore } from '@/app/store/store';
-import { createPostAction } from '@/app/lib/actions/actions';
+import {
+  createPostAction,
+  publishPostToMailchimpAction,
+} from '@/app/lib/actions/actions';
 import { IoClose, IoEyeSharp, IoSave, IoSend } from 'react-icons/io5';
+import { User } from '@supabase/supabase-js';
+import { SiMailchimp } from 'react-icons/si';
+import { TbArticleFilled } from 'react-icons/tb';
+import { processAndUploadImages } from '../../lib/processAndUploadImages';
 
 interface PreviewProps {
   editor: Editor | null;
   user: User;
   params?: { id: string } | null;
 }
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 export default function Preview({ editor, user, params }: PreviewProps) {
   const { showPreview, setShowPreview } = usePostsStore();
@@ -43,103 +44,125 @@ export default function Preview({ editor, user, params }: PreviewProps) {
     return h1?.textContent?.trim() || 'Untitled';
   };
 
-  const saveDraft = async () => {
+  const publishArticle = async (
+    platform: 'draft' | 'mailchimp' | 'blog' | 'everywhere'
+  ) => {
     if (!editor) {
       toast.error('Editor not available');
       return;
     }
 
-    toast('Saving draft...');
+    toast(`Processing post for ${platform}...`);
 
     const content = editor.getHTML().trim();
-
     if (!content || content === '<p></p>') {
       toast.error('Post content cannot be empty');
       return;
     }
 
-    const title =
-      prompt('Enter post title', getDefaultTitle()) || 'Untitled Draft';
+    const title = getDefaultTitle();
     if (!title.trim()) {
-      toast.error('Post title cannot be empty');
+      toast.error('Please add a title to your post');
       return;
     }
 
     try {
+      // Process and upload images
+      const { updatedContent, imageUrls } = await processAndUploadImages(
+        content,
+        user.id
+      );
+      console.log('Uploaded images:', imageUrls);
+
+      const isDraft = platform === 'draft';
+      const status = isDraft ? 'draft' : 'published';
+      const published_at = isDraft ? null : new Date().toISOString();
+      const published_to_mailchimp =
+        platform === 'mailchimp' || platform === 'everywhere';
+
+      // Save post to Supabase
       const formData = new FormData();
       if (params?.id) {
         formData.append('id', params.id);
       }
       formData.append('author_id', user.id);
       formData.append('title', title);
-      formData.append('content', content);
-      formData.append('status', 'draft');
+      formData.append('content', updatedContent);
+      formData.append('status', status);
+      if (published_at) {
+        formData.append('published_at', published_at);
+      }
+      if (platform === 'mailchimp' || platform === 'everywhere') {
+        formData.append('published_to_mailchimp', 'true');
+      }
+      if (platform === 'blog' || platform === 'everywhere') {
+        formData.append('published_to_blog', 'true');
+      }
       formData.append('metadata', JSON.stringify({ tags: [] }));
 
-      const result = await createPostAction(formData);
-      console.log(result);
+      const postResult = await createPostAction(formData);
+      console.log('Post result:', postResult);
 
-      if (!result.success) {
-        toast.error(result.error || 'Failed to save draft');
-        throw new Error(result.error || 'Failed to save draft');
-      }
-      toast.success('Draft saved successfully!');
-      closePreview();
-    } catch (error) {
-      console.error('Error saving draft:', error);
-      toast.error('Failed to save draft');
-    }
-  };
-
-  const publishPost = async () => {
-    if (!editor) {
-      toast.error('Editor not available');
-      return;
-    }
-    const content = editor.getHTML().trim();
-    if (!content || content === '<p></p>') {
-      toast.error('Post content cannot be empty');
-      return;
-    }
-    const title =
-      prompt('Enter post title', getDefaultTitle()) || 'Untitled Post';
-    if (!title.trim()) {
-      toast.error('Post title cannot be empty');
-      return;
-    }
-
-    try {
-      const {
-        data: { user },
-        error: authError,
-      } = await supabase.auth.getUser();
-      if (authError || !user) {
-        toast.error('Please log in to publish a post');
-        return;
+      if (!postResult.success || !postResult.data?.id) {
+        toast.error(postResult.error || 'Failed to save post');
+        throw new Error(postResult.error || 'Failed to save post');
       }
 
-      const formData = new FormData();
-      if (params?.id) {
-        formData.append('id', params.id);
+      if (published_to_mailchimp) {
+        const mailchimpResult = await publishToMailchimp(
+          postResult.data.id,
+          title,
+          updatedContent
+        );
+        if (!mailchimpResult.success) {
+          toast.error(
+            mailchimpResult.error || 'Failed to send post to audience'
+          );
+          console.error(
+            'Failed to send post to audience',
+            mailchimpResult.error
+          );
+        }
       }
-      formData.append('author_id', user.id);
-      formData.append('title', title);
-      formData.append('content', content);
-      formData.append('status', 'published');
-      formData.append('published_at', new Date().toISOString());
-      formData.append('metadata', JSON.stringify({ tags: [] }));
 
-      const result = await createPostAction(formData);
-
-      if (!result.success) {
-        toast.error(result.error || 'Failed to publish post');
-        throw new Error(result.error || 'Failed to publish post');
-      }
-      toast.success('Post published successfully!');
+      toast.success(
+        isDraft ? 'Draft saved successfully!' : 'Post published successfully!'
+      );
       closePreview();
     } catch (error) {
       console.error('Error publishing post:', error);
-      toast.error('Failed to publish post');
+      toast.error('Failed to process post');
+    }
+  };
+
+  const publishToMailchimp = async (
+    postId: string,
+    title: string,
+    content: string
+  ) => {
+    try {
+      const mailchimpResult = await publishPostToMailchimpAction({
+        postId,
+        title,
+        content,
+      });
+
+      if (!mailchimpResult.success) {
+        toast.error(mailchimpResult.error || 'Failed to send post to audience');
+        return { success: false, error: mailchimpResult.error, data: null };
+      }
+
+      toast.success('Post published to Mailchimp successfully!');
+
+      return { success: true, error: null, data: mailchimpResult };
+    } catch (error) {
+      console.error('Error publishing post to Mailchimp:', error);
+      toast.error('Failed to publish post to Mailchimp');
+      return {
+        success: false,
+        error: 'Failed to publish post to Mailchimp',
+        data: null,
+      };
     }
   };
 
@@ -209,14 +232,14 @@ export default function Preview({ editor, user, params }: PreviewProps) {
             ref={modalRef}
           >
             <div
-              className='bg-white rounded-lg w-full h-full flex flex-col'
+              className='bg-gray-300 rounded-lg w-full h-full flex flex-col'
               onClick={(e) => e.stopPropagation()}
             >
               <div className='flex items-center justify-between px-4 py-2 bg-gray-800 text-white border-b border-gray-600'>
                 <h2 className='font-semibold'>Post Preview</h2>
                 <div className='flex items-center gap-2'>
                   <button
-                    onClick={saveDraft}
+                    onClick={() => publishArticle('draft')}
                     className='border border-gray-500 text-xs flex items-center gap-2 p-2 rounded hover:bg-gray-700 hover:text-white focus:outline-none cursor-pointer'
                     aria-label='Save Draft'
                   >
@@ -224,11 +247,27 @@ export default function Preview({ editor, user, params }: PreviewProps) {
                     <IoSave size={12} />
                   </button>
                   <button
-                    onClick={publishPost}
+                    onClick={() => publishArticle('mailchimp')}
                     className='border border-gray-500 text-xs flex items-center gap-2 p-2 rounded hover:bg-gray-700 hover:text-white focus:outline-none cursor-pointer'
                     aria-label='Publish'
                   >
-                    Publish
+                    Publish to Mailchimp
+                    <SiMailchimp size={12} />
+                  </button>
+                  <button
+                    onClick={() => publishArticle('blog')}
+                    className='border border-gray-500 text-xs flex items-center gap-2 p-2 rounded hover:bg-gray-700 hover:text-white focus:outline-none cursor-pointer'
+                    aria-label='Publish'
+                  >
+                    Publish to Blog
+                    <TbArticleFilled size={12} />
+                  </button>
+                  <button
+                    onClick={() => publishArticle('everywhere')}
+                    className='border border-gray-500 text-xs flex items-center gap-2 p-2 rounded hover:bg-gray-700 hover:text-white focus:outline-none cursor-pointer'
+                    aria-label='Publish'
+                  >
+                    Publish Everywhere
                     <IoSend size={12} />
                   </button>
                   <button
@@ -242,7 +281,7 @@ export default function Preview({ editor, user, params }: PreviewProps) {
                 </div>
               </div>
               <div
-                className='tiptap flex-1 overflow-y-auto p-4 prose prose-sm sm:prose lg:prose-lg xl:prose-xl mx-auto'
+                className='tiptap flex-1 w-full max-w-[836px] bg-white overflow-y-auto p-4 my-4 prose prose-sm sm:prose lg:prose-lg xl:prose-xl mx-auto'
                 dangerouslySetInnerHTML={{
                   __html:
                     typeof window !== 'undefined'

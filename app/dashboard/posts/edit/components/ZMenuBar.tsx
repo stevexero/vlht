@@ -48,9 +48,11 @@ export default function ZMenuBar({ editor, user, params }: MenuBarProps) {
       <BlockQuote editor={editor} />
       <PageFormatting editor={editor} />
       <AddLink editor={editor} />
-      <AddImage editor={editor} />
+      <AddImage editor={editor} user={user} />
       <TextColorPicker editor={editor} />
-      <EmojiPickerMenu editor={editor} />
+      <div className='hidden sm:block'>
+        <EmojiPickerMenu editor={editor} />
+      </div>
       <FullScreen />
       <MinimizeToolbar />
       <ClearText editor={editor} />

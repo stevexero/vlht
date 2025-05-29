@@ -1,3 +1,5 @@
+'use client';
+
 import { usePostsStore } from '@/app/store/store';
 import { LiaWindowMinimize } from 'react-icons/lia';
 import { Tooltip } from 'react-tooltip';

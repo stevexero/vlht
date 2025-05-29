@@ -60,6 +60,10 @@ export const createPostAction = async (formData: FormData) => {
   const status = formData.get('status')?.toString();
   const published_at = formData.get('published_at')?.toString() || null;
   const metadata = JSON.parse(formData.get('metadata')?.toString() || '{}');
+  const published_to_mailchimp =
+    formData.get('published_to_mailchimp')?.toString() || false;
+  const published_to_blog =
+    formData.get('published_to_blog')?.toString() || false;
 
   // Validate inputs
   if (!title?.trim()) {
@@ -85,6 +89,8 @@ export const createPostAction = async (formData: FormData) => {
           ? new Date(published_at).toISOString()
           : null,
         metadata,
+        published_to_mailchimp,
+        published_to_blog,
       })
       .select('id')
       .single();
@@ -103,3 +109,33 @@ export const createPostAction = async (formData: FormData) => {
     };
   }
 };
+
+/****************/
+/* upload Image */
+/****************/
+export async function uploadImageAction(file: File, userId: string) {
+  const supabase = await createClient();
+  //   const bucket = 'image';
+  const newFilePath = `${userId}/${file.name}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from('image')
+    .upload(newFilePath, file, { upsert: true, cacheControl: '3600' });
+
+  if (uploadError) {
+    console.error('Upload error:', uploadError);
+    return { success: false, error: uploadError.message, data: null };
+  }
+
+  const { data: publicUrlData } = supabase.storage
+    .from('image')
+    .getPublicUrl(newFilePath);
+  const publicUrl = publicUrlData.publicUrl;
+
+  if (!publicUrl) {
+    console.error('Error getting public URL');
+    return { success: false, error: 'Error getting public URL', data: null };
+  }
+
+  return { success: true, error: null, data: { url: publicUrl } };
+}
