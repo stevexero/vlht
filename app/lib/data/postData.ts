@@ -45,3 +45,20 @@ export async function getAllPosts(userId: string) {
 
   return { success: true, message: 'Posts fetched successfully', data: data };
 }
+
+export async function fetchAllPosts() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('posts')
+    .select('*')
+    .eq('status', 'published')
+    .eq('published_to_blog', true)
+    .order('published_at', { ascending: false });
+
+  if (error) {
+    return { success: false, message: error.message, data: null };
+  }
+
+  return { success: true, message: 'Posts fetched successfully', data: data };
+}

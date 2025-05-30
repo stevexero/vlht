@@ -7,6 +7,12 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '2mb',
     },
   },
+  images: {
+    domains: [
+      // 'exftxjchbbtiozuejdks.supabase.co',
+      'xklaxpzwmgbffwufaxgo.supabase.co',
+    ],
+  },
 };
 
 export default nextConfig;
