@@ -19,15 +19,22 @@ import AddLink from './menuItems/AddLink';
 import PageFormatting from './menuItems/PageFormatting';
 import BlockQuote from './menuItems/BlockQuote';
 import Code from './menuItems/Code';
+import { useEffect } from 'react';
 
 interface MenuBarProps {
   editor: Editor | null;
   user: User;
-  params?: { id: string } | null;
+  params?: { id: string; viewonly: boolean } | null;
 }
 
 export default function ZMenuBar({ editor, user, params }: MenuBarProps) {
-  const { isFullScreen } = usePostsStore();
+  const { isFullScreen, setIsFullScreen } = usePostsStore();
+
+  useEffect(() => {
+    if (params?.viewonly) {
+      setIsFullScreen(true);
+    }
+  }, [params?.viewonly, setIsFullScreen]);
 
   if (!editor) {
     return null;

@@ -14,6 +14,9 @@ import ZMenuBar from './ZMenuBar';
 import { usePostsStore } from '@/app/store/store';
 import '../styles.css';
 import Todos from './Todos';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 const extensions = [
   Color.configure({ types: [TextStyle.name, ListItem.name] }),
@@ -48,17 +51,32 @@ export default function PostEditor({
   user,
   initialContent,
   params,
+  author,
 }: {
   user: User;
   initialContent: string;
-  params?: { id: string } | null;
+  params?: { id: string; viewonly: boolean } | null;
+  author?: string;
 }) {
+  const router = useRouter();
+
   const { isFullScreen } = usePostsStore();
 
   const editor = useEditor({
     extensions: extensions,
     content: initialContent,
   });
+
+  useEffect(() => {
+    if (author === undefined && !params?.viewonly) {
+      router.push('/dashboard/posts');
+      toast.error('You are not authorized to edit this post');
+    }
+  }, [author, router, user.id, params?.viewonly]);
+
+  if (author === undefined && !params?.viewonly) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div

@@ -1,7 +1,7 @@
 'use client';
 
 import { useActionState } from 'react';
-import Link from 'next/link';
+// import Link from 'next/link';
 import { loginAction, LoginState } from '@/app/lib/actions/actions';
 import InputField from '@/app/ui/text/InputField';
 import Button from '@/app/ui/buttons/Button';
@@ -15,7 +15,7 @@ export default function LoginForm() {
   );
 
   return (
-    <div className='w-2xl flex flex-col gap-4 mx-auto mt-20 p-4 xl:p-12'>
+    <div className='max-w-2xl flex flex-col gap-4 mx-auto mt-20 p-4 xl:p-12'>
       {state.message && (
         <div className='mt-11 -mb-20'>
           <ErrorMessage message={state.message} />
@@ -49,7 +49,7 @@ export default function LoginForm() {
           disabled={isPending}
           className='mt-6'
         />
-        <div className='inline-block text-right'>
+        {/* <div className='inline-block text-right'>
           <Link
             className='text-sm text-gray-400 underline hover:text-gray-300 transition-all duration-300 focus:outline-none focus:text-gray-300'
             href='/signup'
@@ -57,7 +57,7 @@ export default function LoginForm() {
           >
             Don&apos;t have an account?
           </Link>
-        </div>
+        </div> */}
       </form>
     </div>
   );

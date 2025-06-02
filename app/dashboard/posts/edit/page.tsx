@@ -4,7 +4,7 @@ import { createClient } from '@/app/lib/supabase/server';
 const AddPost = async ({
   searchParams,
 }: {
-  searchParams: Promise<{ id: string }>;
+  searchParams: Promise<{ id: string; viewonly: boolean }>;
 }) => {
   const supabase = await createClient();
 

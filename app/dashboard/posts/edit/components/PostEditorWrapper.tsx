@@ -70,16 +70,21 @@ export default async function PostEditorWrapper({
   params,
 }: {
   user: User;
-  params: { id: string };
+  params?: { id: string; viewonly: boolean } | null;
 }) {
   let initialContent = defaultContent;
 
-  const response = await getPostAction(user.id, params.id);
+  const response = await getPostAction(user.id, params?.id || '');
   if (response.success && response.data) {
     initialContent = response.data.content;
   }
 
   return (
-    <PostEditor user={user} initialContent={initialContent} params={params} />
+    <PostEditor
+      user={user}
+      initialContent={initialContent}
+      params={params}
+      author={response?.data?.author_id}
+    />
   );
 }

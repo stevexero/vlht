@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { getAllPosts } from '@/app/lib/data/postData';
+// import { getAllPosts } from '@/app/lib/data/postData';
+import { getEveryPost } from '@/app/lib/data/postData';
 import { createClient } from '@/app/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import DndPosts from './components/DndPosts';
@@ -15,7 +16,12 @@ export default async function page() {
     redirect('/login');
   }
 
-  const posts = await getAllPosts(user.id);
+  //   const posts = await getAllPosts(user.id);
+  //   if (!posts.success) {
+  //     console.error('Error fetching posts:', posts.message);
+  //   }
+
+  const posts = await getEveryPost();
   if (!posts.success) {
     console.error('Error fetching posts:', posts.message);
   }
@@ -30,10 +36,10 @@ export default async function page() {
           </button>
         </Link>
       </div>
-      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 mr-8'>
+      <div className='mt-4 mr-8'>
         <div className='flex flex-col gap-4'>
           <Suspense fallback={<div>Loading...</div>}>
-            <DndPosts posts={posts.data || []} />
+            <DndPosts posts={posts.data || []} user={user} />
           </Suspense>
         </div>
       </div>

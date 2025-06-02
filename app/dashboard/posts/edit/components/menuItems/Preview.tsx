@@ -15,14 +15,17 @@ import { User } from '@supabase/supabase-js';
 import { SiMailchimp } from 'react-icons/si';
 import { TbArticleFilled } from 'react-icons/tb';
 import { processAndUploadImages } from '../../lib/processAndUploadImages';
+import { useRouter } from 'next/navigation';
 
 interface PreviewProps {
   editor: Editor | null;
   user: User;
-  params?: { id: string } | null;
+  params?: { id: string; viewonly: boolean } | null;
 }
 
 export default function Preview({ editor, user, params }: PreviewProps) {
+  const router = useRouter();
+
   const { showPreview, setShowPreview } = usePostsStore();
   const modalRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -32,8 +35,12 @@ export default function Preview({ editor, user, params }: PreviewProps) {
   };
 
   const closePreview = useCallback(() => {
+    if (params?.viewonly) {
+      router.push('/dashboard/posts');
+      return;
+    }
     setShowPreview(false);
-  }, [setShowPreview]);
+  }, [setShowPreview, router, params?.viewonly]);
 
   const getDefaultTitle = () => {
     if (!editor) return 'Untitled';
@@ -67,7 +74,6 @@ export default function Preview({ editor, user, params }: PreviewProps) {
     }
 
     try {
-      // Process and upload images
       const { updatedContent, imageUrls } = await processAndUploadImages(
         content,
         user.id
@@ -80,7 +86,6 @@ export default function Preview({ editor, user, params }: PreviewProps) {
       const published_to_mailchimp =
         platform === 'mailchimp' || platform === 'everywhere';
 
-      // Save post to Supabase
       const formData = new FormData();
       if (params?.id) {
         formData.append('id', params.id);
@@ -197,7 +202,7 @@ export default function Preview({ editor, user, params }: PreviewProps) {
     if (showPreview) {
       document.addEventListener('keydown', handleKeyDown);
       document.addEventListener('keydown', handleFocusTrap);
-      closeButtonRef.current?.focus(); // Focus close button when modal opens
+      closeButtonRef.current?.focus();
     }
 
     return () => {
@@ -205,6 +210,12 @@ export default function Preview({ editor, user, params }: PreviewProps) {
       document.removeEventListener('keydown', handleFocusTrap);
     };
   }, [showPreview, closePreview]);
+
+  useEffect(() => {
+    if (params?.viewonly) {
+      setShowPreview(true);
+    }
+  }, [params?.viewonly, setShowPreview]);
 
   return (
     <>
@@ -238,38 +249,42 @@ export default function Preview({ editor, user, params }: PreviewProps) {
               <div className='flex items-center justify-between px-4 py-2 bg-gray-800 text-white border-b border-gray-600'>
                 <h2 className='font-semibold'>Post Preview</h2>
                 <div className='flex items-center gap-2'>
-                  <button
-                    onClick={() => publishArticle('draft')}
-                    className='border border-gray-500 text-xs flex items-center gap-2 p-2 rounded hover:bg-gray-700 hover:text-white focus:outline-none cursor-pointer'
-                    aria-label='Save Draft'
-                  >
-                    Save Draft
-                    <IoSave size={12} />
-                  </button>
-                  <button
-                    onClick={() => publishArticle('mailchimp')}
-                    className='border border-gray-500 text-xs flex items-center gap-2 p-2 rounded hover:bg-gray-700 hover:text-white focus:outline-none cursor-pointer'
-                    aria-label='Publish'
-                  >
-                    Publish to Mailchimp
-                    <SiMailchimp size={12} />
-                  </button>
-                  <button
-                    onClick={() => publishArticle('blog')}
-                    className='border border-gray-500 text-xs flex items-center gap-2 p-2 rounded hover:bg-gray-700 hover:text-white focus:outline-none cursor-pointer'
-                    aria-label='Publish'
-                  >
-                    Publish to Blog
-                    <TbArticleFilled size={12} />
-                  </button>
-                  <button
-                    onClick={() => publishArticle('everywhere')}
-                    className='border border-gray-500 text-xs flex items-center gap-2 p-2 rounded hover:bg-gray-700 hover:text-white focus:outline-none cursor-pointer'
-                    aria-label='Publish'
-                  >
-                    Publish Everywhere
-                    <IoSend size={12} />
-                  </button>
+                  {params?.viewonly ? null : (
+                    <>
+                      <button
+                        onClick={() => publishArticle('draft')}
+                        className='border border-gray-500 text-xs flex items-center gap-2 p-2 rounded hover:bg-gray-700 hover:text-white focus:outline-none cursor-pointer'
+                        aria-label='Save Draft'
+                      >
+                        Save Draft
+                        <IoSave size={12} />
+                      </button>
+                      <button
+                        onClick={() => publishArticle('mailchimp')}
+                        className='border border-gray-500 text-xs flex items-center gap-2 p-2 rounded hover:bg-gray-700 hover:text-white focus:outline-none cursor-pointer'
+                        aria-label='Publish'
+                      >
+                        Publish to Mailchimp
+                        <SiMailchimp size={12} />
+                      </button>
+                      <button
+                        onClick={() => publishArticle('blog')}
+                        className='border border-gray-500 text-xs flex items-center gap-2 p-2 rounded hover:bg-gray-700 hover:text-white focus:outline-none cursor-pointer'
+                        aria-label='Publish'
+                      >
+                        Publish to Blog
+                        <TbArticleFilled size={12} />
+                      </button>
+                      <button
+                        onClick={() => publishArticle('everywhere')}
+                        className='border border-gray-500 text-xs flex items-center gap-2 p-2 rounded hover:bg-gray-700 hover:text-white focus:outline-none cursor-pointer'
+                        aria-label='Publish'
+                      >
+                        Publish Everywhere
+                        <IoSend size={12} />
+                      </button>
+                    </>
+                  )}
                   <button
                     ref={closeButtonRef}
                     onClick={closePreview}

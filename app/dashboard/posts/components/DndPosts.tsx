@@ -12,12 +12,14 @@ import { CSS } from '@dnd-kit/utilities';
 import toast from 'react-hot-toast';
 import { createPostAction } from '@/app/lib/actions/postActions';
 import { publishPostToMailchimpAction } from '@/app/lib/actions/publishActions';
+import { User } from '@supabase/supabase-js';
 
 interface Post {
   id: string;
   title: string;
   content: string;
   status: string;
+  author_id: string;
 }
 
 function Droppable({
@@ -77,12 +79,21 @@ function Draggable({
   );
 }
 
-export default function DndPosts({ posts }: { posts: Post[] }) {
+export default function DndPosts({
+  posts,
+  user,
+}: {
+  posts: Post[];
+  user: User;
+}) {
   const [drafts, setDrafts] = useState<Post[]>(
-    posts.filter((p) => p.status === 'draft')
+    posts.filter((p) => p.status === 'draft' && p.author_id === user.id)
   );
   const [published, setPublished] = useState<Post[]>(
-    posts.filter((p) => p.status === 'published')
+    posts.filter((p) => p.status === 'published' && p.author_id === user.id)
+  );
+  const [otherPosts] = useState<Post[]>(
+    posts.filter((p) => p.author_id !== user.id)
   );
 
   const handleDragEnd = async (event: DragEndEvent) => {
@@ -157,9 +168,9 @@ export default function DndPosts({ posts }: { posts: Post[] }) {
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 mr-8'>
+      <div className='grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 mr-8'>
         <Droppable id='drafts'>
-          <h2 className='text-lg font-bold mb-2'>Drafts</h2>
+          <h2 className='text-lg font-bold mb-2'>My Drafts</h2>
           {drafts.length === 0 ? (
             <p className='text-sm text-gray-500'>No drafts available</p>
           ) : (
@@ -179,7 +190,7 @@ export default function DndPosts({ posts }: { posts: Post[] }) {
         </Droppable>
 
         <Droppable id='published'>
-          <h2 className='text-lg font-bold mb-2'>Published</h2>
+          <h2 className='text-lg font-bold mb-2'>My Posts</h2>
           {published.length === 0 ? (
             <p className='text-sm text-gray-500'>No published posts</p>
           ) : (
@@ -197,6 +208,38 @@ export default function DndPosts({ posts }: { posts: Post[] }) {
             ))
           )}
         </Droppable>
+
+        {/* Other Users Posts */}
+        <div className='bg-gray-100 p-4 rounded-md'>
+          <h2 className='text-lg font-bold mb-2'>Posts by Others</h2>
+          {otherPosts.length === 0 ? (
+            <p className='text-sm text-gray-500'>No posts</p>
+          ) : (
+            otherPosts.map((post) => (
+              <div
+                key={post.id}
+                id={post.id}
+                className='bg-white p-4 rounded-md shadow-sm mt-6'
+              >
+                <div aria-label={`Published post: ${post.title}`}>
+                  <div className='flex justify-between items-start'>
+                    <h3 className='text-lg font-bold'>{post.title}</h3>
+                    <p className='bg-gray-300 text-gray-700 border border-gray-900 px-2 py-1 rounded-full text-xs'>
+                      {post.status}
+                    </p>
+                  </div>
+                  <Link
+                    href={`/dashboard/posts/edit?id=${post.id}&viewonly=true`}
+                  >
+                    <button className='bg-blue-500 text-white px-4 py-2 rounded-md mt-2'>
+                      View
+                    </button>
+                  </Link>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </DndContext>
   );
