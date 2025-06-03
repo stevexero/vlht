@@ -128,7 +128,6 @@ export default function Preview({ editor, user, params, post }: PreviewProps) {
       formData.append('metadata', JSON.stringify({ tags: [] }));
 
       const postResult = await createPostAction(formData);
-      console.log('Post result:', postResult);
 
       if (!postResult.success || !postResult.data?.id) {
         toast.error(postResult.error || 'Failed to save post');

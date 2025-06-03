@@ -10,7 +10,6 @@ export const processAndUploadImages = async (
   const imageUrls: { originalSrc: string; publicUrl: string }[] = [];
 
   if (imageTags.length === 0) {
-    console.log('No images found in content');
     return { updatedContent, imageUrls };
   }
 

@@ -2,7 +2,7 @@
 
 import { usePostsStore } from '@/app/store/postsStore';
 import BlogCard from '../blogCard/BlogCard';
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 
 interface Post {
   id: string;
@@ -28,9 +28,9 @@ export default function Blogs({ posts }: { posts: Post[] }) {
     return post.post_tags?.some((pt) => pt.tags?.tag === selectedTag);
   });
 
-  useEffect(() => {
-    console.log('posts', posts);
-  }, [posts]);
+  //   useEffect(() => {
+  //     console.log('posts', posts);
+  //   }, [posts]);
 
   return (
     <>

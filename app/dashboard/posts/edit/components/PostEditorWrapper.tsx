@@ -97,14 +97,10 @@ export default async function PostEditorWrapper({
   if (params?.id && user?.id) {
     const postTagIdsResponse = await getPostTagIdsByPostId(params?.id);
     if (postTagIdsResponse.success) {
-      console.log('postTagIdsResponse', postTagIdsResponse);
       existingTags = postTagIdsResponse.data?.map((tag) => tag.tag_id) || [];
-      console.log('existingTags', existingTags);
       const tagsResponse = await getTagsByTagIds(existingTags);
       if (tagsResponse.success) {
-        console.log('tagsResponse', tagsResponse);
         existingTags = tagsResponse.data?.map((tag) => tag.tag) || [];
-        console.log('existingTags', existingTags);
       }
     }
   }
