@@ -1,9 +1,9 @@
 import React, { Suspense } from 'react';
-import BlogCard from './components/blogCard/BlogCard';
 import { fetchAllPosts } from '@/app/lib/data/postData';
 import Header from './components/header/Header';
 import Sidebar from './components/sidebar/Sidebar';
 import SubscribeForm from './components/subscribeForm/SubscribeForm';
+import Blogs from './components/blogs/Blogs';
 
 export default async function BlogPage() {
   const posts = await fetchAllPosts();
@@ -27,18 +27,7 @@ export default async function BlogPage() {
             </Suspense>
           </div>
           <div className='col-span-1 lg:col-span-2'>
-            {posts.data?.map((post) => (
-              <Suspense
-                key={post.id}
-                fallback={
-                  <div className='bg-white rounded-md shadow-md'>
-                    Loading...
-                  </div>
-                }
-              >
-                <BlogCard post={post} />
-              </Suspense>
-            ))}
+            <Blogs posts={posts.data || []} />
           </div>
         </div>
       </div>

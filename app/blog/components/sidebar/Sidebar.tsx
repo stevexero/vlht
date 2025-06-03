@@ -1,15 +1,22 @@
 import Link from 'next/link';
 import React from 'react';
 import { CiSearch } from 'react-icons/ci';
+import Tags from './components/Tags';
+import { getAllTags } from '@/app/lib/data/postData';
 
 interface Post {
   id: string;
   title: string;
 }
 
-export default function Sidebar({ posts }: { posts: Post[] }) {
+export default async function Sidebar({ posts }: { posts: Post[] }) {
+  const tags = await getAllTags();
+  if (!tags.success) {
+    console.error(tags.message);
+  }
+
   return (
-    <div>
+    <div className='sticky top-32'>
       {/* Search */}
       <div className='bg-white rounded-md shadow-md p-4 mb-8'>
         <label className='text-blue-950 text-lg font-semibold'>Search</label>
@@ -65,17 +72,7 @@ export default function Sidebar({ posts }: { posts: Post[] }) {
         </div>
       </div>
       {/* Tags */}
-      <div className='bg-white rounded-md shadow-md p-4 mb-8'>
-        <label className='text-blue-950 text-lg font-semibold'>Tags</label>
-        <hr className='my-4 border-blue-950/20 border-3' />
-        <div className='flex flex-col gap-2'></div>
-        <div className='flex flex-col gap-2'>
-          <Link href='/blog/tags/travel'>Travel</Link>
-          <Link href='/blog/tags/food'>Food</Link>
-          <Link href='/blog/tags/lifestyle'>Lifestyle</Link>
-          <Link href='/blog/tags/fashion'>Fashion</Link>
-        </div>
-      </div>
+      <Tags tags={tags.data || []} />
       {/* Recent Comments */}
       <div className='bg-white rounded-md shadow-md p-4 mb-8'>
         <label className='text-blue-950 text-lg font-semibold'>

@@ -62,7 +62,19 @@ export async function fetchAllPosts() {
 
   const { data, error } = await supabase
     .from('posts')
-    .select('*')
+    .select(
+      `
+      *,
+      post_tags (
+        tag_id,
+        post_id,
+        tags (
+          id,
+          tag
+        )
+      )
+    `
+    )
     .eq('status', 'published')
     .eq('published_to_blog', true)
     .order('published_at', { ascending: false });

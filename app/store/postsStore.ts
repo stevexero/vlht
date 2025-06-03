@@ -15,6 +15,9 @@ interface PostsStore {
 
   tempTagsList: string[];
   setTempTagsList: (tempTagsList: string[]) => void;
+
+  selectedTag: string;
+  setSelectedTag: (selectedTag: string) => void;
 }
 
 export const usePostsStore = create<PostsStore>((set) => ({
@@ -32,4 +35,7 @@ export const usePostsStore = create<PostsStore>((set) => ({
 
   tempTagsList: [],
   setTempTagsList: (tempTagsList) => set({ tempTagsList }),
+
+  selectedTag: '',
+  setSelectedTag: (selectedTag) => set({ selectedTag }),
 }));
