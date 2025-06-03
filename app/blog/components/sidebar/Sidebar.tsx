@@ -53,10 +53,10 @@ export default async function Sidebar({ posts }: { posts: Post[] }) {
         </label>
         <hr className='my-4 border-blue-950/20 border-3' />
         <div className='flex flex-col gap-2'>
-          <Link href='/blog/categories/travel'>Travel</Link>
-          <Link href='/blog/categories/food'>Food</Link>
-          <Link href='/blog/categories/lifestyle'>Lifestyle</Link>
-          <Link href='/blog/categories/fashion'>Fashion</Link>
+          <Link href='/blog/#'>Travel</Link>
+          <Link href='/blog/#'>Food</Link>
+          <Link href='/blog/#'>Lifestyle</Link>
+          <Link href='/blog/#'>Fashion</Link>
         </div>
       </div>
       {/* Archives */}
@@ -66,9 +66,9 @@ export default async function Sidebar({ posts }: { posts: Post[] }) {
         <div className='flex flex-col gap-2'></div>
         <div className='flex flex-col gap-2'>
           {/* Year */}
-          <Link href='/blog/archives/2025'>2025</Link>
-          <Link href='/blog/archives/2024'>2024</Link>
-          <Link href='/blog/archives/2023'>2023</Link>
+          <Link href='/blog/#'>2025</Link>
+          <Link href='/blog/#'>2024</Link>
+          <Link href='/blog/#'>2023</Link>
         </div>
       </div>
       {/* Tags */}
