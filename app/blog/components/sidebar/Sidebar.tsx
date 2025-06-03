@@ -1,12 +1,15 @@
-import Link from 'next/link';
 import React from 'react';
-import { CiSearch } from 'react-icons/ci';
+// import { CiSearch } from 'react-icons/ci';
 import Tags from './components/Tags';
 import { getAllTags } from '@/app/lib/data/postData';
+import RecentPosts from './components/RecentPosts';
+import Archives from './components/Archives';
 
 interface Post {
   id: string;
   title: string;
+  created_at: string;
+  published_at: string;
 }
 
 export default async function Sidebar({ posts }: { posts: Post[] }) {
@@ -18,7 +21,7 @@ export default async function Sidebar({ posts }: { posts: Post[] }) {
   return (
     <div className='sticky top-32'>
       {/* Search */}
-      <div className='bg-white rounded-md shadow-md p-4 mb-8'>
+      {/* <div className='bg-white rounded-md shadow-md p-4 mb-8'>
         <label className='text-blue-950 text-lg font-semibold'>Search</label>
         <input
           type='text'
@@ -28,26 +31,12 @@ export default async function Sidebar({ posts }: { posts: Post[] }) {
         <button className='w-full mt-4 flex flex-row items-center justify-center gap-2 bg-blue-950 text-white p-2 rounded-md hover:bg-blue-900 focus:bg-blue-900 transition-colors duration-300 cursor-pointer focus:outline-none'>
           Search <CiSearch />
         </button>
-      </div>
-      {/* Recent Posts */}
-      <div className='bg-white rounded-md shadow-md p-4 mb-8'>
-        <label className='text-blue-950 text-lg font-semibold'>
-          Recent Posts
-        </label>
-        <hr className='my-4 border-blue-950/20 border-3' />
-        {posts.map((post) => (
-          <div key={post.id} className='flex flex-col gap-2'>
-            <Link
-              href={`/blog/${post.id}`}
-              className='text-blue-950 hover:text-amber-500 hover:underline transition-all duration-300 mb-4'
-            >
-              {post.title.toUpperCase()}
-            </Link>
-          </div>
-        ))}
-      </div>
+      </div> */}
+      <Tags tags={tags.data || []} />
+      <RecentPosts posts={posts.slice(0, 5)} />
+      <Archives posts={posts || []} />
       {/* Categories */}
-      <div className='bg-white rounded-md shadow-md p-4 mb-8'>
+      {/* <div className='bg-white rounded-md shadow-md p-4 mb-8'>
         <label className='text-blue-950 text-lg font-semibold'>
           Categories
         </label>
@@ -58,28 +47,14 @@ export default async function Sidebar({ posts }: { posts: Post[] }) {
           <Link href='/blog/#'>Lifestyle</Link>
           <Link href='/blog/#'>Fashion</Link>
         </div>
-      </div>
-      {/* Archives */}
-      <div className='bg-white rounded-md shadow-md p-4 mb-8'>
-        <label className='text-blue-950 text-lg font-semibold'>Archives</label>
-        <hr className='my-4 border-blue-950/20 border-3' />
-        <div className='flex flex-col gap-2'></div>
-        <div className='flex flex-col gap-2'>
-          {/* Year */}
-          <Link href='/blog/#'>2025</Link>
-          <Link href='/blog/#'>2024</Link>
-          <Link href='/blog/#'>2023</Link>
-        </div>
-      </div>
-      {/* Tags */}
-      <Tags tags={tags.data || []} />
+      </div> */}
       {/* Recent Comments */}
-      <div className='bg-white rounded-md shadow-md p-4 mb-8'>
+      {/* <div className='bg-white rounded-md shadow-md p-4 mb-8'>
         <label className='text-blue-950 text-lg font-semibold'>
           Recent Comments
         </label>
         <hr className='my-4 border-blue-950/20 border-3' />
-      </div>
+      </div> */}
     </div>
   );
 }
