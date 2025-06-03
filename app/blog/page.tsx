@@ -26,9 +26,7 @@ export default async function BlogPage() {
               <Sidebar posts={posts.data || []} />
             </Suspense>
           </div>
-          <div className='col-span-1 lg:col-span-2'>
-            <Blogs posts={posts.data || []} />
-          </div>
+          <Blogs posts={posts.data || []} />
         </div>
       </div>
     </div>

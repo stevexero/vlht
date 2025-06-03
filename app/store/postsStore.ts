@@ -18,6 +18,9 @@ interface PostsStore {
 
   selectedTag: string;
   setSelectedTag: (selectedTag: string) => void;
+
+  layout: 'grid' | 'list';
+  setLayout: (layout: 'grid' | 'list') => void;
 }
 
 export const usePostsStore = create<PostsStore>((set) => ({
@@ -38,4 +41,7 @@ export const usePostsStore = create<PostsStore>((set) => ({
 
   selectedTag: '',
   setSelectedTag: (selectedTag) => set({ selectedTag }),
+
+  layout: 'list',
+  setLayout: (layout) => set({ layout }),
 }));
