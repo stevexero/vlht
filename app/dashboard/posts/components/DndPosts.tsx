@@ -10,8 +10,10 @@ import {
 } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import toast from 'react-hot-toast';
-import { createPostAction } from '@/app/lib/actions/postActions';
-import { publishPostToMailchimpAction } from '@/app/lib/actions/publishActions';
+import {
+  createPostAction,
+  publishPostToMailchimpAction,
+} from '@/app/lib/actions/actions';
 import { User } from '@supabase/supabase-js';
 
 interface Post {
@@ -20,6 +22,8 @@ interface Post {
   content: string;
   status: string;
   author_id: string;
+  published_to_mailchimp: boolean;
+  published_to_blog: boolean;
 }
 
 function Droppable({
@@ -133,27 +137,30 @@ export default function DndPosts({
           formData.append('content', post.content);
           formData.append('status', 'published');
           formData.append('published_at', new Date().toISOString());
-          formData.append('published_to_mailchimp', 'true');
           formData.append('published_to_blog', 'true');
+          formData.append('published_to_mailchimp', 'true');
 
           const result = await createPostAction(formData);
           if (!result.success) {
             throw new Error(result.error || 'Failed to publish post');
           }
 
-          const mailchimpResult = await publishPostToMailchimpAction({
-            postId,
-            title: post.title,
-            content: post.content,
-          });
+          // Publish to Mailchimp
+          if (post.published_to_mailchimp === false) {
+            const mailchimpResult = await publishPostToMailchimpAction({
+              postId,
+              title: post.title,
+              content: post.content,
+            });
 
-          if (!mailchimpResult.success) {
-            throw new Error(
-              mailchimpResult.error || 'Failed to publish post to Mailchimp'
-            );
+            if (!mailchimpResult.success) {
+              throw new Error(
+                mailchimpResult.error || 'Failed to publish post to Mailchimp'
+              );
+            }
           }
 
-          toast.success('Post published everywhere!');
+          toast.success('Post published!');
         } catch (error) {
           console.error('Error publishing post:', error);
           toast.error('Failed to publish post');
@@ -177,7 +184,21 @@ export default function DndPosts({
             drafts.map((post) => (
               <Draggable key={post.id} id={post.id} data={{ type: 'post' }}>
                 <div aria-label={`Draft post: ${post.title}`}>
-                  <h3 className='text-lg font-bold'>{post.title}</h3>
+                  <div className='flex justify-between items-start'>
+                    <h3 className='font-bold'>{post.title}</h3>
+                    <div className='flex flex-row gap-2'>
+                      {post.published_to_mailchimp && (
+                        <p className='bg-gray-300 text-gray-700 border border-gray-900 px-2 py-1 rounded-full text-xs'>
+                          Mailchimp
+                        </p>
+                      )}
+                      {post.published_to_blog && (
+                        <p className='bg-gray-300 text-gray-700 border border-gray-900 px-2 py-1 rounded-full text-xs'>
+                          Blog
+                        </p>
+                      )}
+                    </div>
+                  </div>
                   <Link href={`/dashboard/posts/edit?id=${post.id}`}>
                     <button className='bg-blue-500 text-white px-4 py-2 rounded-md mt-2'>
                       Edit
@@ -190,17 +211,31 @@ export default function DndPosts({
         </Droppable>
 
         <Droppable id='published'>
-          <h2 className='text-lg font-bold mb-2'>My Posts</h2>
+          <h2 className='text-lg font-bold mb-2'>My Published Posts</h2>
           {published.length === 0 ? (
             <p className='text-sm text-gray-500'>No published posts</p>
           ) : (
             published.map((post) => (
               <Draggable key={post.id} id={post.id} data={{ type: 'post' }}>
                 <div aria-label={`Published post: ${post.title}`}>
-                  <h3 className='text-lg font-bold'>{post.title}</h3>
+                  <div className='flex justify-between items-start'>
+                    <h3 className='font-bold'>{post.title}</h3>
+                    <div className='flex flex-row gap-2'>
+                      {post.published_to_mailchimp && (
+                        <p className='bg-gray-300 text-gray-700 border border-gray-900 px-2 py-1 rounded-full text-xs'>
+                          Mailchimp
+                        </p>
+                      )}
+                      {post.published_to_blog && (
+                        <p className='bg-gray-300 text-gray-700 border border-gray-900 px-2 py-1 rounded-full text-xs'>
+                          Blog
+                        </p>
+                      )}
+                    </div>
+                  </div>
                   <Link href={`/dashboard/posts/edit?id=${post.id}`}>
                     <button className='bg-blue-500 text-white px-4 py-2 rounded-md mt-2'>
-                      Edit
+                      View
                     </button>
                   </Link>
                 </div>
@@ -223,10 +258,19 @@ export default function DndPosts({
               >
                 <div aria-label={`Published post: ${post.title}`}>
                   <div className='flex justify-between items-start'>
-                    <h3 className='text-lg font-bold'>{post.title}</h3>
-                    <p className='bg-gray-300 text-gray-700 border border-gray-900 px-2 py-1 rounded-full text-xs'>
-                      {post.status}
-                    </p>
+                    <h3 className='font-bold'>{post.title}</h3>
+                    <div className='flex flex-row gap-2'>
+                      {post.published_to_mailchimp && (
+                        <p className='bg-gray-300 text-gray-700 border border-gray-900 px-2 py-1 rounded-full text-xs'>
+                          Mailchimp
+                        </p>
+                      )}
+                      {post.published_to_blog && (
+                        <p className='bg-gray-300 text-gray-700 border border-gray-900 px-2 py-1 rounded-full text-xs'>
+                          Blog
+                        </p>
+                      )}
+                    </div>
                   </div>
                   <Link
                     href={`/dashboard/posts/edit?id=${post.id}&viewonly=true`}

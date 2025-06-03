@@ -20,14 +20,24 @@ import PageFormatting from './menuItems/PageFormatting';
 import BlockQuote from './menuItems/BlockQuote';
 import Code from './menuItems/Code';
 import { useEffect } from 'react';
+import Tags from './menuItems/Tags';
 
 interface MenuBarProps {
   editor: Editor | null;
   user: User;
-  params?: { id: string; viewonly: boolean } | null;
+  params?: { id: string; viewonly: boolean; newpost: boolean } | null;
+  post?: {
+    id: string;
+    title: string;
+    content: string;
+    status: string;
+    published_to_mailchimp: boolean;
+    published_to_blog: boolean;
+    published_at: string;
+  } | null;
 }
 
-export default function ZMenuBar({ editor, user, params }: MenuBarProps) {
+export default function ZMenuBar({ editor, user, params, post }: MenuBarProps) {
   const { isFullScreen, setIsFullScreen } = usePostsStore();
 
   useEffect(() => {
@@ -46,24 +56,32 @@ export default function ZMenuBar({ editor, user, params }: MenuBarProps) {
         isFullScreen ? '' : 'rounded-t-md'
       } text-white`}
     >
-      <UndoRedo editor={editor} />
-      <HeadingsParagraph editor={editor} />
-      <TextFormatting editor={editor} />
-      <TextAlign editor={editor} />
-      <Lists editor={editor} />
-      <Code editor={editor} />
-      <BlockQuote editor={editor} />
-      <PageFormatting editor={editor} />
-      <AddLink editor={editor} />
-      <AddImage editor={editor} user={user} />
-      <TextColorPicker editor={editor} />
-      <div className='hidden sm:block'>
-        <EmojiPickerMenu editor={editor} />
-      </div>
+      {post?.status === 'draft' || params?.newpost ? (
+        <>
+          <UndoRedo editor={editor} />
+          <HeadingsParagraph editor={editor} />
+          <TextFormatting editor={editor} />
+          <TextAlign editor={editor} />
+          <Lists editor={editor} />
+          <Code editor={editor} />
+          <BlockQuote editor={editor} />
+          <PageFormatting editor={editor} />
+          <AddLink editor={editor} />
+          <AddImage editor={editor} user={user} />
+          <TextColorPicker editor={editor} />
+
+          <div className='hidden sm:block'>
+            <EmojiPickerMenu editor={editor} />
+          </div>
+        </>
+      ) : null}
       <FullScreen />
       <MinimizeToolbar />
-      <ClearText editor={editor} />
-      <Preview editor={editor} user={user} params={params} />
+      {post?.status === 'draft' || params?.newpost ? (
+        <ClearText editor={editor} />
+      ) : null}
+      <Tags />
+      <Preview editor={editor} user={user} params={params} post={post} />
     </div>
   );
 }

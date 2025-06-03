@@ -9,24 +9,36 @@ import { usePostsStore } from '@/app/store/store';
 import {
   createPostAction,
   publishPostToMailchimpAction,
+  revertPostToDraftAction,
+  updatePostTagsAction,
 } from '@/app/lib/actions/actions';
 import { IoClose, IoEyeSharp, IoSave, IoSend } from 'react-icons/io5';
 import { User } from '@supabase/supabase-js';
 import { SiMailchimp } from 'react-icons/si';
-import { TbArticleFilled } from 'react-icons/tb';
+import { TbArticleFilled, TbArticleOff } from 'react-icons/tb';
 import { processAndUploadImages } from '../../lib/processAndUploadImages';
 import { useRouter } from 'next/navigation';
 
 interface PreviewProps {
   editor: Editor | null;
   user: User;
-  params?: { id: string; viewonly: boolean } | null;
+  params?: { id: string; viewonly: boolean; newpost: boolean } | null;
+  post?: {
+    id: string;
+    title: string;
+    content: string;
+    status: string;
+    published_to_mailchimp: boolean;
+    published_to_blog: boolean;
+    published_at: string;
+  } | null;
 }
 
-export default function Preview({ editor, user, params }: PreviewProps) {
+export default function Preview({ editor, user, params, post }: PreviewProps) {
   const router = useRouter();
 
-  const { showPreview, setShowPreview } = usePostsStore();
+  const { showPreview, setShowPreview, tempTagsList, setTempTagsList } =
+    usePostsStore();
   const modalRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -99,9 +111,19 @@ export default function Preview({ editor, user, params }: PreviewProps) {
       }
       if (platform === 'mailchimp' || platform === 'everywhere') {
         formData.append('published_to_mailchimp', 'true');
+        if (post?.published_to_blog === false) {
+          formData.append('published_to_blog', 'false');
+        } else {
+          formData.append('published_to_blog', 'true');
+        }
       }
       if (platform === 'blog' || platform === 'everywhere') {
         formData.append('published_to_blog', 'true');
+        if (post?.published_to_mailchimp === false) {
+          formData.append('published_to_mailchimp', 'false');
+        } else {
+          formData.append('published_to_mailchimp', 'true');
+        }
       }
       formData.append('metadata', JSON.stringify({ tags: [] }));
 
@@ -130,10 +152,29 @@ export default function Preview({ editor, user, params }: PreviewProps) {
         }
       }
 
+      // Add tags to post
+      if (params?.newpost) {
+        const promises = tempTagsList.map((tag) =>
+          updatePostTagsAction(postResult.data.id, tag)
+        );
+        const results = await Promise.all(promises);
+
+        if (results.every((result) => result.success)) {
+          toast.success('Tags added successfully');
+          setTempTagsList([]);
+        } else {
+          toast.error(
+            results.find((result) => !result.success)?.error ||
+              'Failed to add tags'
+          );
+        }
+      }
+
       toast.success(
         isDraft ? 'Draft saved successfully!' : 'Post published successfully!'
       );
       closePreview();
+      router.refresh();
     } catch (error) {
       console.error('Error publishing post:', error);
       toast.error('Failed to process post');
@@ -168,6 +209,17 @@ export default function Preview({ editor, user, params }: PreviewProps) {
         error: 'Failed to publish post to Mailchimp',
         data: null,
       };
+    }
+  };
+
+  const revertPostToDraft = async (postId: string) => {
+    const revertResult = await revertPostToDraftAction(postId);
+    if (!revertResult.success) {
+      toast.error(revertResult.error || 'Failed to revert post to draft');
+    } else {
+      toast.success('Post reverted to draft successfully!');
+      closePreview();
+      router.refresh();
     }
   };
 
@@ -251,38 +303,56 @@ export default function Preview({ editor, user, params }: PreviewProps) {
                 <div className='flex items-center gap-2'>
                   {params?.viewonly ? null : (
                     <>
-                      <button
-                        onClick={() => publishArticle('draft')}
-                        className='border border-gray-500 text-xs flex items-center gap-2 p-2 rounded hover:bg-gray-700 hover:text-white focus:outline-none cursor-pointer'
-                        aria-label='Save Draft'
-                      >
-                        Save Draft
-                        <IoSave size={12} />
-                      </button>
-                      <button
-                        onClick={() => publishArticle('mailchimp')}
-                        className='border border-gray-500 text-xs flex items-center gap-2 p-2 rounded hover:bg-gray-700 hover:text-white focus:outline-none cursor-pointer'
-                        aria-label='Publish'
-                      >
-                        Publish to Mailchimp
-                        <SiMailchimp size={12} />
-                      </button>
-                      <button
-                        onClick={() => publishArticle('blog')}
-                        className='border border-gray-500 text-xs flex items-center gap-2 p-2 rounded hover:bg-gray-700 hover:text-white focus:outline-none cursor-pointer'
-                        aria-label='Publish'
-                      >
-                        Publish to Blog
-                        <TbArticleFilled size={12} />
-                      </button>
-                      <button
-                        onClick={() => publishArticle('everywhere')}
-                        className='border border-gray-500 text-xs flex items-center gap-2 p-2 rounded hover:bg-gray-700 hover:text-white focus:outline-none cursor-pointer'
-                        aria-label='Publish'
-                      >
-                        Publish Everywhere
-                        <IoSend size={12} />
-                      </button>
+                      {post?.status === 'published' ? null : (
+                        <button
+                          onClick={() => publishArticle('draft')}
+                          className='border border-gray-500 text-xs flex items-center gap-2 p-2 rounded hover:bg-gray-700 hover:text-white focus:outline-none cursor-pointer'
+                          aria-label='Save Draft'
+                        >
+                          Save Draft
+                          <IoSave size={12} />
+                        </button>
+                      )}
+                      {post?.published_to_mailchimp ? null : (
+                        <button
+                          onClick={() => publishArticle('mailchimp')}
+                          className='border border-gray-500 text-xs flex items-center gap-2 p-2 rounded hover:bg-gray-700 hover:text-white focus:outline-none cursor-pointer'
+                          aria-label='Publish'
+                        >
+                          Publish to Mailchimp
+                          <SiMailchimp size={12} />
+                        </button>
+                      )}
+                      {post?.published_to_blog ? (
+                        <button
+                          onClick={() => revertPostToDraft(post?.id)}
+                          className='border border-gray-500 text-xs flex items-center gap-2 p-2 rounded hover:bg-gray-700 hover:text-white focus:outline-none cursor-pointer'
+                          aria-label='Unpublish'
+                        >
+                          Revert to Draft
+                          <TbArticleOff size={12} />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => publishArticle('blog')}
+                          className='border border-gray-500 text-xs flex items-center gap-2 p-2 rounded hover:bg-gray-700 hover:text-white focus:outline-none cursor-pointer'
+                          aria-label='Publish'
+                        >
+                          Publish to Blog
+                          <TbArticleFilled size={12} />
+                        </button>
+                      )}
+                      {post?.published_to_blog ||
+                      post?.published_to_mailchimp ? null : (
+                        <button
+                          onClick={() => publishArticle('everywhere')}
+                          className='border border-gray-500 text-xs flex items-center gap-2 p-2 rounded hover:bg-gray-700 hover:text-white focus:outline-none cursor-pointer'
+                          aria-label='Publish'
+                        >
+                          Publish Everywhere
+                          <IoSend size={12} />
+                        </button>
+                      )}
                     </>
                   )}
                   <button

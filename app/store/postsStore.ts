@@ -9,6 +9,12 @@ interface PostsStore {
 
   showPreview: boolean;
   setShowPreview: (showPreview: boolean) => void;
+
+  showTagsModal: boolean;
+  setShowTagsModal: (showTagsModal: boolean) => void;
+
+  tempTagsList: string[];
+  setTempTagsList: (tempTagsList: string[]) => void;
 }
 
 export const usePostsStore = create<PostsStore>((set) => ({
@@ -20,4 +26,10 @@ export const usePostsStore = create<PostsStore>((set) => ({
 
   showPreview: false,
   setShowPreview: (showPreview) => set({ showPreview }),
+
+  showTagsModal: false,
+  setShowTagsModal: (showTagsModal) => set({ showTagsModal }),
+
+  tempTagsList: [],
+  setTempTagsList: (tempTagsList) => set({ tempTagsList }),
 }));

@@ -61,7 +61,7 @@ export const createPostAction = async (formData: FormData) => {
   const published_at = formData.get('published_at')?.toString() || null;
   const metadata = JSON.parse(formData.get('metadata')?.toString() || '{}');
   const published_to_mailchimp =
-    formData.get('published_to_mailchimp')?.toString() || false;
+    formData.get('published_to_mailchimp')?.toString() === 'true';
   const published_to_blog =
     formData.get('published_to_blog')?.toString() || false;
 
@@ -139,3 +139,102 @@ export async function uploadImageAction(file: File, userId: string) {
 
   return { success: true, error: null, data: { url: publicUrl } };
 }
+
+/************************/
+/* Revert post to draft */
+/************************/
+export const revertPostToDraftAction = async (postId: string) => {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('posts')
+    .update({ status: 'draft', published_at: null, published_to_blog: false })
+    .eq('id', postId)
+    .select('id')
+    .single();
+
+  if (error) {
+    return { success: false, error: error.message, data: null };
+  }
+
+  return { success: true, error: null, data: data };
+};
+
+/*******************************/
+/* Add Unique Tags to Database */
+/*******************************/
+export const addUniqueTagsAction = async (tag: string) => {
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from('tags')
+    .upsert({ tag }, { onConflict: 'tag', ignoreDuplicates: true });
+  if (error) {
+    return { success: false, error: error.message, data: null };
+  }
+
+  return { success: true, error: null, data: null };
+};
+
+/********************/
+/* Update post tags */
+/********************/
+export const updatePostTagsAction = async (postId: string, tagName: string) => {
+  const supabase = await createClient();
+
+  const tagIds: string[] = [];
+
+  const { data: tagData, error: tagError } = await supabase
+    .from('tags')
+    .select('id')
+    .eq('tag', tagName)
+    .single();
+  if (tagError) {
+    return { success: false, error: tagError.message, data: null };
+  }
+
+  tagIds.push(tagData.id);
+
+  const tagPromises = tagIds.map((tagId) =>
+    supabase.from('post_tags').insert({
+      post_id: postId,
+      tag_id: tagId,
+    })
+  );
+
+  const results = await Promise.all(tagPromises);
+
+  if (results.some((result) => result.error)) {
+    return { success: false, error: 'Failed to update post tags', data: null };
+  }
+
+  return { success: true, error: null, data: null };
+};
+
+/********************/
+/* Remove post tag */
+/********************/
+export const removePostTagAction = async (postId: string, tagName: string) => {
+  const supabase = await createClient();
+
+  const { data: tagData, error: tagError } = await supabase
+    .from('tags')
+    .select('id')
+    .eq('tag', tagName)
+    .single();
+
+  if (tagError) {
+    return { success: false, error: tagError.message, data: null };
+  }
+
+  const { error } = await supabase
+    .from('post_tags')
+    .delete()
+    .eq('post_id', postId)
+    .eq('tag_id', tagData.id);
+
+  if (error) {
+    return { success: false, error: error.message, data: null };
+  }
+
+  return { success: true, error: null, data: null };
+};

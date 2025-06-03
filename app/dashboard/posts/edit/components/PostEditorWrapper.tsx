@@ -1,6 +1,12 @@
 import { getPostAction } from '@/app/lib/actions/postActions';
 import PostEditor from './PostEditor';
 import { User } from '@supabase/supabase-js';
+import {
+  getPostTagIdsByPostId,
+  getTagsByTagIds,
+  getUserPostById,
+} from '@/app/lib/data/postData';
+import { getAllTags } from '@/app/lib/data/postData';
 
 const defaultContent = `
 <h1 style="text-align: left;">
@@ -70,7 +76,7 @@ export default async function PostEditorWrapper({
   params,
 }: {
   user: User;
-  params?: { id: string; viewonly: boolean } | null;
+  params?: { id: string; viewonly: boolean; newpost: boolean } | null;
 }) {
   let initialContent = defaultContent;
 
@@ -79,12 +85,45 @@ export default async function PostEditorWrapper({
     initialContent = response.data.content;
   }
 
+  let post = null;
+  if (params?.id && user?.id) {
+    const postResponse = await getUserPostById(params?.id, user?.id);
+    if (postResponse.success) {
+      post = postResponse.data;
+    }
+  }
+
+  let existingTags = [];
+  if (params?.id && user?.id) {
+    const postTagIdsResponse = await getPostTagIdsByPostId(params?.id);
+    if (postTagIdsResponse.success) {
+      console.log('postTagIdsResponse', postTagIdsResponse);
+      existingTags = postTagIdsResponse.data?.map((tag) => tag.tag_id) || [];
+      console.log('existingTags', existingTags);
+      const tagsResponse = await getTagsByTagIds(existingTags);
+      if (tagsResponse.success) {
+        console.log('tagsResponse', tagsResponse);
+        existingTags = tagsResponse.data?.map((tag) => tag.tag) || [];
+        console.log('existingTags', existingTags);
+      }
+    }
+  }
+
+  let tagsList = [];
+  const tagsListResponse = await getAllTags();
+  if (tagsListResponse.success) {
+    tagsList = tagsListResponse.data?.map((tag) => tag.tag) || [];
+  }
+
   return (
     <PostEditor
       user={user}
       initialContent={initialContent}
       params={params}
       author={response?.data?.author_id}
+      post={post}
+      existingTags={existingTags}
+      tagsList={tagsList}
     />
   );
 }

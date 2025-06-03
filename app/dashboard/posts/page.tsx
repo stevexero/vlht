@@ -1,5 +1,4 @@
 import Link from 'next/link';
-// import { getAllPosts } from '@/app/lib/data/postData';
 import { getEveryPost } from '@/app/lib/data/postData';
 import { createClient } from '@/app/lib/supabase/server';
 import { redirect } from 'next/navigation';
@@ -16,11 +15,6 @@ export default async function page() {
     redirect('/login');
   }
 
-  //   const posts = await getAllPosts(user.id);
-  //   if (!posts.success) {
-  //     console.error('Error fetching posts:', posts.message);
-  //   }
-
   const posts = await getEveryPost();
   if (!posts.success) {
     console.error('Error fetching posts:', posts.message);
@@ -30,7 +24,7 @@ export default async function page() {
     <div className='w-full ml-8 md:ml-72 mt-24 md:mt-16'>
       <div className='flex justify-between items-center'>
         <h1 className='text-2xl font-bold'>Posts</h1>
-        <Link href='/dashboard/posts/edit' className='mr-4'>
+        <Link href='/dashboard/posts/edit?newpost=true' className='mr-4'>
           <button className='bg-blue-500 text-white px-4 py-2 rounded-md'>
             Add Post
           </button>
