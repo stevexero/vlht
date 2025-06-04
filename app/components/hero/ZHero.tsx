@@ -1,8 +1,7 @@
 'use client';
 
 import { motion, useScroll, useTransform } from 'framer-motion';
-// import Link from 'next/link';
-// import Image from 'next/image';
+import Link from 'next/link';
 import { IoMdArrowDroprightCircle } from 'react-icons/io';
 
 const Hero = () => {
@@ -39,23 +38,13 @@ const Hero = () => {
             neighborhoods, letting you effortlessly taste true luxury
           </p>
           <div className='mt-12'>
-            {/* <Link
+            <Link
               href='/book'
-              className='inline-flex items-center justify-center w-60 sm:w-40 h-12 sm:h-10 bg-gradient-to-r from-gray-600 to-gray-200 text-white border-2 border-amber-400 rounded-full shadow-[0_4px_0_black] font-alfa sm:text-sm md:text-lg tracking-wider hover:text-white'
+              className='button w-full md:w-40 border-2 border-amber-200 text-amber-200'
             >
-              BOOK NOW
-              <Image
-                src='/images/right_arrow.svg'
-                alt='Arrow'
-                width={22}
-                height={22}
-                className='ml-2 drop-shadow-[1px_1px_0_black]'
-              />
-            </Link> */}
-            <button className='button w-full md:w-40 border-2 border-amber-200 text-amber-200'>
               Book Now
               <IoMdArrowDroprightCircle className='icon' size={24} />
-            </button>
+            </Link>
           </div>
         </div>
       </div>

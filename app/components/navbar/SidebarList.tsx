@@ -19,13 +19,13 @@ export default function SidebarList() {
         className={isOpen ? 'mt-4' : ''}
       />
       <ListItemLink
-        href={`/dashboard/settings`}
+        href={`/dashboard/scheduling`}
         icon={
-          <IoMdSettings
+          <MdPostAdd
             className={`text-lg ${isOpen ? 'mr-2' : 'mr-1 mt-[2px]'}`}
           />
         }
-        text='Settings'
+        text='Scheduling'
       />
       <ListItemLink
         href={`/dashboard/posts`}
@@ -35,6 +35,15 @@ export default function SidebarList() {
           />
         }
         text='Posts'
+      />
+      <ListItemLink
+        href={`/dashboard/settings`}
+        icon={
+          <IoMdSettings
+            className={`text-lg ${isOpen ? 'mr-2' : 'mr-1 mt-[2px]'}`}
+          />
+        }
+        text='Settings'
       />
     </ul>
   );
