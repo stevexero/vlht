@@ -13,8 +13,8 @@ export default function page() {
       }}
     >
       <Header />
-      <div className='w-full max-w-7xl mx-auto flex flex-col justify-center px-4 xl:px-0'>
-        <div className='w-full -mt-64 mb-16 relative'>
+      <div className='w-full max-w-7xl mx-auto flex flex-col justify-center px-0 md:px-4 xl:px-0'>
+        <div className='w-full -mt-96 md:-mt-64 mb-16 relative'>
           <div className='w-full'>
             <Suspense fallback={<div>Loading...</div>}>
               <CheckoutForm />

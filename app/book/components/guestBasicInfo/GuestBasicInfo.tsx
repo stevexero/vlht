@@ -126,15 +126,37 @@ export default function GuestBasicInfo() {
   };
 
   // Don't render if no guests
-  if (guestCount <= 0 || guests.length === 0) {
-    return null;
-  }
+  //   if (guestCount <= 0 || guests.length === 0) {
+  //     return null;
+  //   }
 
   const currentGuest = guests[currentStep];
-  if (!currentGuest) return null;
+  //   if (!currentGuest) return null;
+  //   if (!currentGuest) {
+  //     return (
+  //       <div className='w-full bg-gray-100 rounded-xl shadow-lg p-6 border border-gray-300 relative'>
+  //         <p className='text-red-900/50 text-center font-semibold text-lg'>
+  //           Please select a number of guests
+  //         </p>
+  //       </div>
+  //     );
+  //   }
 
   return (
-    <div className='w-full bg-gray-100 rounded-xl shadow-lg p-6 border border-gray-300'>
+    <div className='w-full bg-gray-100 rounded-xl shadow-lg p-6 border border-gray-300 relative'>
+      <div
+        className={`${
+          !guestCount
+            ? 'absolute top-0 left-0 w-full h-full bg-gray-100/90 cursor-not-allowed flex items-center justify-center z-10 rounded-xl'
+            : ''
+        }`}
+      >
+        {!guestCount ? (
+          <p className='text-red-900/50 text-center font-semibold text-lg'>
+            Please select a number of guests
+          </p>
+        ) : null}
+      </div>
       <div className='mb-6'>
         <h3 className='text-xl font-bold text-gray-800 text-center'>
           Guest Information
@@ -154,7 +176,7 @@ export default function GuestBasicInfo() {
             </label>
             <input
               type='email'
-              value={currentGuest.email || ''}
+              value={currentGuest?.email || ''}
               onChange={(e) =>
                 handleInputChange(currentStep, 'email', e.target.value)
               }
@@ -173,7 +195,7 @@ export default function GuestBasicInfo() {
           </label>
           <input
             type='text'
-            value={currentGuest.firstName || ''}
+            value={currentGuest?.firstName || ''}
             onChange={(e) =>
               handleInputChange(currentStep, 'firstName', e.target.value)
             }
@@ -187,7 +209,7 @@ export default function GuestBasicInfo() {
           </label>
           <input
             type='text'
-            value={currentGuest.lastName || ''}
+            value={currentGuest?.lastName || ''}
             onChange={(e) =>
               handleInputChange(currentStep, 'lastName', e.target.value)
             }
@@ -203,7 +225,7 @@ export default function GuestBasicInfo() {
             type='number'
             min='0'
             max='120'
-            value={currentGuest.age || ''}
+            value={currentGuest?.age || ''}
             onChange={(e) =>
               handleInputChange(currentStep, 'age', e.target.value)
             }

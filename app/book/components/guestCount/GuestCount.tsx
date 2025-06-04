@@ -4,10 +4,23 @@ import { useBookingStore } from '@/app/store/store';
 import { motion } from 'framer-motion';
 
 export default function GuestCount() {
-  const { setGuestCount, guestCount } = useBookingStore();
+  const { setGuestCount, guestCount, selectedTime } = useBookingStore();
 
   return (
-    <div className='w-full bg-gray-100 rounded-xl shadow-lg p-6 border border-gray-300'>
+    <div className='w-full bg-gray-100 rounded-xl shadow-lg p-6 border border-gray-300 relative'>
+      <div
+        className={`${
+          !selectedTime
+            ? 'absolute top-0 left-0 w-full h-full bg-gray-100/90 cursor-not-allowed flex items-center justify-center z-10 rounded-xl'
+            : ''
+        }`}
+      >
+        {!selectedTime ? (
+          <p className='text-red-900/50 text-center font-semibold text-lg'>
+            Please select a time from available time slots
+          </p>
+        ) : null}
+      </div>
       <div className='w-full flex flex-col items-center justify-center mb-6'>
         <div className='flex flex-col items-center justify-center'>
           <h3 className='text-xl font-bold text-gray-800'>Number of Guests</h3>

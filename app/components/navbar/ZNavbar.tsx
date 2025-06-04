@@ -184,14 +184,14 @@ export default function ZNavbar({ user }: NavbarProps) {
           >
             BLOG
           </Link>
-          <Link
+          {/* <Link
             href='/feed'
             className={`ml-16 hover:text-amber-300 border-t border-transparent hover:border-amber-300 transition-all duration-300 ${
               isScrolled ? 'py-1' : 'py-4'
             } transition-all duration-300`}
           >
             FEED
-          </Link>
+          </Link> */}
           <Link
             href='/contact'
             className={`ml-16 hover:text-amber-300 border-t border-transparent hover:border-amber-300 transition-all duration-300 ${
@@ -199,6 +199,15 @@ export default function ZNavbar({ user }: NavbarProps) {
             } transition-all duration-300`}
           >
             CONTACT
+          </Link>
+          <Link
+            href='/book'
+            // className={`ml-16 hover:text-amber-300 border-t border-transparent hover:border-amber-300 transition-all duration-300 ${
+            className={`ml-12 px-4 bg-amber-300 text-blue-950 hover:bg-amber-200 hover:text-blue-800 border-t border-transparent hover:border-amber-200 ${
+              isScrolled ? 'py-1' : 'py-4'
+            } transition-all duration-300`}
+          >
+            BOOK NOW
           </Link>
         </nav>
       </div>

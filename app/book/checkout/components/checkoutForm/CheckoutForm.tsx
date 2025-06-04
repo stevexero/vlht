@@ -26,8 +26,8 @@ export default function CheckoutForm() {
   }, [guests]);
 
   return (
-    <div className='w-full max-w-4xl mx-auto p-6'>
-      <div className='bg-white rounded-xl shadow-lg p-6 border border-gray-300'>
+    <div className='w-full max-w-4xl mx-auto p-2 md:p-6'>
+      <div className='bg-white rounded-xl shadow-lg p-4 md:p-6 border border-gray-300'>
         <h2 className='text-2xl font-bold text-gray-800 mb-6'>
           Booking Summary
         </h2>
@@ -37,7 +37,7 @@ export default function CheckoutForm() {
           <h3 className='text-lg font-semibold text-gray-700 mb-4'>
             Booking Details
           </h3>
-          <div className='grid grid-cols-2 gap-4'>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <div className='bg-gray-50 p-4 rounded-lg'>
               <p className='text-sm text-gray-600'>Date</p>
               <p className='font-semibold text-gray-800'>{selectedDate}</p>
@@ -65,7 +65,7 @@ export default function CheckoutForm() {
 
               return (
                 <div key={index} className='bg-gray-50 p-4 rounded-lg'>
-                  <div className='flex justify-between items-center mb-2'>
+                  <div className='flex flex-col md:flex-row justify-between items-start md:items-center mb-2'>
                     <h4 className='font-semibold text-gray-800'>
                       {index === 0 ? 'Primary Guest' : `Guest ${index + 1}`}
                     </h4>
@@ -75,7 +75,7 @@ export default function CheckoutForm() {
                       </span>
                     )}
                   </div>
-                  <div className='grid grid-cols-2 gap-4'>
+                  <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                     <div>
                       <p className='text-sm text-gray-600'>Name</p>
                       <p className='font-medium text-gray-800'>

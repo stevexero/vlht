@@ -1,7 +1,8 @@
 import React, { Suspense } from 'react';
 import Header from './components/header/Header';
-import CompactBookingForm from './components/compactBookingForm/CompactBookingForm';
+// import CompactBookingForm from './components/compactBookingForm/CompactBookingForm';
 import CalendarAndTimeCard from './components/CalendarAndTimeCard';
+import TrackBooking from './components/trackBooking/TrackBooking';
 
 export default function page() {
   return (
@@ -12,7 +13,8 @@ export default function page() {
         <div className='w-full mt-36 mb-16 relative'>
           <div className='absolute -top-52 w-full max-w-7xl bg-gradient-to-br from-amber-200 to-amber-100 shadow-2xl shadow-blue-950/50 rounded-md'>
             <Suspense fallback={<div>Loading...</div>}>
-              <CompactBookingForm />
+              {/* <CompactBookingForm /> */}
+              <TrackBooking />
             </Suspense>
           </div>
           <div className='w-full'>
