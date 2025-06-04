@@ -49,7 +49,7 @@ export default function CompactBookingForm() {
           - Scroll down to see more dates
         </span>
       </label>
-      <div className='w-full flex items-end gap-2'>
+      <div className='w-full flex flex-col md:flex-row items-end gap-2'>
         <div className='w-full flex flex-col gap-2'>
           <label
             htmlFor='date'
@@ -111,7 +111,7 @@ export default function CompactBookingForm() {
         </div>
         <button
           type='submit'
-          className='w-1/2 bg-blue-950 text-white p-2 rounded-md hover:bg-blue-900 focus:bg-blue-900 transition-colors duration-300 cursor-pointer focus:outline-none'
+          className='w-full md:w-1/2 mt-2 md:mt-0 bg-blue-950 text-white p-2 rounded-md hover:bg-blue-900 focus:bg-blue-900 transition-colors duration-300 cursor-pointer focus:outline-none'
         >
           {isSubmitting ? 'Booking...' : 'Book'}
         </button>

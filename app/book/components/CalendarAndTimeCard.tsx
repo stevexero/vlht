@@ -11,7 +11,7 @@ export default function CalendarAndTimeCard() {
   return (
     <div
       className={`w-full max-w-7xl mx-auto ${
-        isDateSelected ? 'grid grid-cols-1 md:grid-cols-3 gap-4' : ''
+        isDateSelected ? 'grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-4' : ''
       }`}
     >
       <div className={`${isDateSelected ? 'col-span-2' : ''}`}>

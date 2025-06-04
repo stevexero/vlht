@@ -24,7 +24,7 @@ export default function TimeCard() {
   const { setSelectedTime, selectedDate, selectedTime } = useBookingStore();
 
   return (
-    <div className='w-full bg-gray-100 rounded-xl shadow-lg p-6 border border-gray-300'>
+    <div className='w-full bg-gray-100 rounded-xl shadow-lg p-6 border border-gray-300 mt-4 md:mt-0'>
       <div className='w-full flex flex-col items-center justify-center mb-6'>
         <h3 className='text-xl font-bold text-gray-800'>
           Available Time Slots ({timeSlots.length})

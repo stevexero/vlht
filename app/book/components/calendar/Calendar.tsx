@@ -75,7 +75,7 @@ export default function Calendar() {
 
     // Add empty cells for days before the first day of the month
     for (let i = 0; i < firstDay; i++) {
-      days.push(<div key={`empty-${i}`} className='h-24'></div>);
+      days.push(<div key={`empty-${i}`} className='h-16 md:h-24'></div>);
     }
 
     // Add cells for each day of the month
@@ -94,7 +94,7 @@ export default function Calendar() {
           key={day}
           whileHover={!isDisabled ? { scale: 1.05 } : {}}
           className={`
-            h-24 p-2 border border-gray-200 rounded-lg
+            h-16 md:h-24 p-2 border border-gray-200 rounded-lg
             ${
               isDisabled
                 ? 'opacity-50 bg-gray-200 cursor-not-allowed'
@@ -113,7 +113,7 @@ export default function Calendar() {
   };
 
   return (
-    <div className='bg-gray-100 rounded-xl shadow-lg p-6 border border-gray-300'>
+    <div className='bg-gray-100 rounded-xl shadow-lg p-1 md:p-6 border border-gray-300 mt-48 md:mt-0'>
       <div className='flex items-center justify-between mb-6'>
         <button
           onClick={handlePrevMonth}
@@ -143,7 +143,9 @@ export default function Calendar() {
         ))}
       </div>
 
-      <div className='grid grid-cols-7 gap-2'>{renderCalendarDays()}</div>
+      <div className='grid grid-cols-7 gap-0 md:gap-2'>
+        {renderCalendarDays()}
+      </div>
     </div>
   );
 }

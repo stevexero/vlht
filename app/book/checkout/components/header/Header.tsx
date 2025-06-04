@@ -19,14 +19,7 @@ export default function Header() {
         }}
       />
       <div className='absolute inset-0 bg-black/50 flex flex-col justify-center px-4 xl:px-0'>
-        <div className='w-full max-w-7xl mx-auto'>
-          <h1
-            className='text-amber-200 text-4xl md:text-6xl font-bold mt-16'
-            style={{ fontFamily: 'var(--font-rajdhani)' }}
-          >
-            Checkout
-          </h1>
-        </div>
+        <div className='w-full max-w-7xl mx-auto'></div>
       </div>
     </header>
   );
