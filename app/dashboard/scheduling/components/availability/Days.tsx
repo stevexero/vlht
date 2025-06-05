@@ -24,6 +24,7 @@ export default function Days({
 }) {
   const [days, setDays] = useState<DaysOfAvailabilityProps>(daysOfAvailability);
   const router = useRouter();
+
   useEffect(() => {
     setDays(daysOfAvailability);
   }, [daysOfAvailability]);
@@ -49,23 +50,9 @@ export default function Days({
   };
 
   return (
-    <div className='flex flex-col gap-2 mt-4'>
+    <div className='flex flex-col gap-2 mt-4 bg-white rounded-lg p-4'>
       <h3 className='text-lg font-bold'>Days</h3>
       <p className='text-sm text-gray-500'>Select days of availability</p>
-      <div className='flex items-center gap-2'>
-        <input
-          type='checkbox'
-          checked={days.sunday || false}
-          onChange={() =>
-            setDays(
-              days.sunday
-                ? { ...days, sunday: false }
-                : { ...days, sunday: true }
-            )
-          }
-        />
-        <label>Sunday</label>
-      </div>
       <div className='flex items-center gap-2'>
         <input
           type='checkbox'
@@ -149,6 +136,20 @@ export default function Days({
           }
         />
         <label>Saturday</label>
+      </div>
+      <div className='flex items-center gap-2'>
+        <input
+          type='checkbox'
+          checked={days.sunday || false}
+          onChange={() =>
+            setDays(
+              days.sunday
+                ? { ...days, sunday: false }
+                : { ...days, sunday: true }
+            )
+          }
+        />
+        <label>Sunday</label>
       </div>
       <button
         className='bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer'

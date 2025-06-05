@@ -94,7 +94,7 @@ export default function PostEditor({
       className={`${
         isFullScreen
           ? 'absolute top-0 left-0 z-10 w-screen h-screen'
-          : 'w-full ml-2 md:ml-72 mt-24 md:mt-16'
+          : 'w-full mt-16 md:mt-8'
       } transition-all duration-300`}
     >
       <div

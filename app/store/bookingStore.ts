@@ -1,5 +1,12 @@
 import { create } from 'zustand';
 
+interface GuestInfo {
+  firstName: string;
+  lastName: string;
+  age: string;
+  email?: string;
+}
+
 interface BookingStoreProps {
   isDateSelected: boolean;
   setIsDateSelected: (isDateSelected: boolean) => void;
@@ -12,6 +19,9 @@ interface BookingStoreProps {
 
   guestCount: number;
   setGuestCount: (guestCount: number) => void;
+
+  guests: GuestInfo[];
+  setGuests: (guests: GuestInfo[]) => void;
 }
 
 export const useBookingStore = create<BookingStoreProps>((set) => ({
@@ -26,4 +36,7 @@ export const useBookingStore = create<BookingStoreProps>((set) => ({
 
   guestCount: 1,
   setGuestCount: (guestCount) => set({ guestCount }),
+
+  guests: [],
+  setGuests: (guests) => set({ guests }),
 }));
