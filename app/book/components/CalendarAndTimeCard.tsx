@@ -6,7 +6,22 @@ import TimeCard from './timeCard/TimeCard';
 import GuestCount from './guestCount/GuestCount';
 import GuestBasicInfo from './guestBasicInfo/GuestBasicInfo';
 
-export default function CalendarAndTimeCard() {
+interface DaysOfAvailabilityProps {
+  monday: boolean;
+  tuesday: boolean;
+  wednesday: boolean;
+  thursday: boolean;
+  friday: boolean;
+  saturday: boolean;
+  sunday: boolean;
+  user_id: string;
+}
+
+export default function CalendarAndTimeCard({
+  daysOfAvailability,
+}: {
+  daysOfAvailability: DaysOfAvailabilityProps[];
+}) {
   //   const { isDateSelected } = useBookingStore();
   return (
     // <div
@@ -19,7 +34,7 @@ export default function CalendarAndTimeCard() {
     >
       {/* <div className={`${isDateSelected ? 'col-span-2' : ''}`}> */}
       <div className={`col-span-2`}>
-        <Calendar />
+        <Calendar daysOfAvailability={daysOfAvailability} />
       </div>
       {/* <div className={`${isDateSelected ? 'block col-span-1' : 'hidden'}`}> */}
       <div className={`block col-span-1`}>

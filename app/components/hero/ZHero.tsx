@@ -40,9 +40,9 @@ const Hero = () => {
           <div className='mt-12'>
             <Link
               href='/book'
-              className='button w-full md:w-40 border-2 border-amber-200 text-amber-200'
+              className='button w-full md:w-48 border-2 border-amber-200 text-amber-200'
             >
-              Book Now
+              Book a Tour
               <IoMdArrowDroprightCircle className='icon' size={24} />
             </Link>
           </div>

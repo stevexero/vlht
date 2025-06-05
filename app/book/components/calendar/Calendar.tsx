@@ -5,7 +5,22 @@ import { motion } from 'framer-motion';
 import { BsChevronLeft, BsChevronRight } from 'react-icons/bs';
 import { useBookingStore } from '@/app/store/store';
 
-export default function Calendar() {
+interface DaysOfAvailabilityProps {
+  monday: boolean;
+  tuesday: boolean;
+  wednesday: boolean;
+  thursday: boolean;
+  friday: boolean;
+  saturday: boolean;
+  sunday: boolean;
+  user_id: string;
+}
+
+export default function Calendar({
+  daysOfAvailability,
+}: {
+  daysOfAvailability: DaysOfAvailabilityProps[];
+}) {
   const { setIsDateSelected, setSelectedDate, selectedDate } =
     useBookingStore();
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -65,7 +80,38 @@ export default function Calendar() {
     const today = new Date();
     const minDate = new Date(today);
     minDate.setDate(today.getDate() + 2);
-    return date < minDate;
+
+    // Check if date is in the past or too soon
+    if (date < minDate) {
+      return true;
+    }
+
+    // Get the day of the week (0 = Sunday, 1 = Monday, etc.)
+    const dayOfWeek = date.getDay();
+
+    // Check if any user has this day available
+    const isDayAvailable = daysOfAvailability.some((availability) => {
+      switch (dayOfWeek) {
+        case 0: // Sunday
+          return availability.sunday;
+        case 1: // Monday
+          return availability.monday;
+        case 2: // Tuesday
+          return availability.tuesday;
+        case 3: // Wednesday
+          return availability.wednesday;
+        case 4: // Thursday
+          return availability.thursday;
+        case 5: // Friday
+          return availability.friday;
+        case 6: // Saturday
+          return availability.saturday;
+        default:
+          return false;
+      }
+    });
+
+    return !isDayAvailable;
   };
 
   const renderCalendarDays = () => {

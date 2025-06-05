@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import React, { Suspense } from 'react';
 import ScheduleSettings from './components/ScheduleSettings';
 import Link from 'next/link';
+import Availability from './components/availability/Availability';
 
 export default async function page() {
   const supabase = await createClient();
@@ -27,6 +28,9 @@ export default async function page() {
         <div className='flex flex-col gap-4'>
           <Suspense fallback={<div>Loading...</div>}>
             <ScheduleSettings />
+          </Suspense>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Availability userId={user.id} />
           </Suspense>
         </div>
       </div>

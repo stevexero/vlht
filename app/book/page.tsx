@@ -3,8 +3,16 @@ import Header from './components/header/Header';
 // import CompactBookingForm from './components/compactBookingForm/CompactBookingForm';
 import CalendarAndTimeCard from './components/CalendarAndTimeCard';
 import TrackBooking from './components/trackBooking/TrackBooking';
+import { getDaysOfAvailability } from '@/app/lib/data/scheduleData';
 
-export default function page() {
+export default async function page() {
+  const response = await getDaysOfAvailability();
+
+  let daysOfAvailability = [];
+  if (response.data) {
+    daysOfAvailability = response.data;
+  }
+
   return (
     <div className='w-full'>
       <Header />
@@ -19,7 +27,7 @@ export default function page() {
           </div>
           <div className='w-full'>
             <Suspense fallback={<div>Loading...</div>}>
-              <CalendarAndTimeCard />
+              <CalendarAndTimeCard daysOfAvailability={daysOfAvailability} />
             </Suspense>
           </div>
           {/* <Blogs posts={posts.data || []} /> */}
