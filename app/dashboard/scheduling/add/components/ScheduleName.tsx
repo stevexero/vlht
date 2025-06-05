@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
 import DashboardCard from '@/app/ui/dashboard/card/DashboardCard';
 import TextInput from '@/app/ui/dashboard/input/TextInput';
+import { useSchedulingStore } from '@/app/store/schedulingStore';
 
 export default function ScheduleName() {
-  const [scheduleName, setScheduleName] = useState('');
+  const { scheduleName, setScheduleName } = useSchedulingStore();
 
   return (
     <DashboardCard title='Schedule Name' containerStyles='mt-4'>
