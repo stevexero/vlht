@@ -1,4 +1,4 @@
-import LinkButton from '@/app/ui/links/dashboard/LinkButton';
+import LinkButton from '@/app/ui/dashboard/links/LinkButton';
 
 export default function MainPageHeading({
   title,

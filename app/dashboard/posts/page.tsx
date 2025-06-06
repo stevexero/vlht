@@ -4,7 +4,7 @@ import { createClient } from '@/app/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import DndPosts from './components/DndPosts';
 import { Suspense } from 'react';
-import MainPageHeading from '@/app/ui/pageHeadings/MainPageHeading';
+import MainPageHeading from '@/app/ui/dashboard/pageHeadings/MainPageHeading';
 
 export default async function page() {
   const supabase = await createClient();

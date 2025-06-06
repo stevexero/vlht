@@ -18,7 +18,6 @@ export default function TimeInterval() {
     { value: 15, label: '15 Minutes' },
     { value: 10, label: '10 Minutes' },
     { value: 5, label: '5 Minutes' },
-    { value: 1, label: '1 Minute' },
   ];
 
   return (

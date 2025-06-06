@@ -1,4 +1,4 @@
-import BackLinkButton from '@/app/ui/links/dashboard/BackLinkButton';
+import BackLinkButton from '@/app/ui/dashboard/links/BackLinkButton';
 
 export default function SubPageHeading({
   href,

@@ -49,11 +49,23 @@ interface SchedulingStoreProps {
   selectedTimeSlots: SelectedTimeSlots;
   toggleTimeSlot: (day: string, timeValue: string) => void;
   getSelectedTimeSlots: (day: string) => string[];
+
+  reset: () => void;
 }
 
 const DEFAULT_TIME_SLOT: TimeSlot = {
   startTime: '09:00',
   endTime: '17:00',
+};
+
+const DEFAULT_DAYS: DaysOfAvailabilityProps = {
+  monday: false,
+  tuesday: false,
+  wednesday: false,
+  thursday: false,
+  friday: false,
+  saturday: false,
+  sunday: false,
 };
 
 export const useSchedulingStore = create<SchedulingStoreProps>((set, get) => ({
@@ -63,15 +75,7 @@ export const useSchedulingStore = create<SchedulingStoreProps>((set, get) => ({
   selectedInterval: 60,
   setSelectedInterval: (selectedInterval) => set({ selectedInterval }),
 
-  days: {
-    monday: false,
-    tuesday: false,
-    wednesday: false,
-    thursday: false,
-    friday: false,
-    saturday: false,
-    sunday: false,
-  },
+  days: DEFAULT_DAYS,
   setDays: (days) => set({ days }),
 
   selectedDay: '',
@@ -115,4 +119,16 @@ export const useSchedulingStore = create<SchedulingStoreProps>((set, get) => ({
     const state = get();
     return state.selectedTimeSlots[day] || [];
   },
+
+  reset: () =>
+    set({
+      scheduleName: '',
+      selectedInterval: 60,
+      days: DEFAULT_DAYS,
+      selectedDay: '',
+      dayTimeSlots: {},
+      allAvailableDays: true,
+      duration: 60,
+      selectedTimeSlots: {},
+    }),
 }));

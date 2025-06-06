@@ -3,8 +3,24 @@
 import ButtonPrimary from '@/app/ui/dashboard/buttons/ButtonPrimary';
 import DashboardCard from '@/app/ui/dashboard/card/DashboardCard';
 import { useSchedulingStore } from '@/app/store/schedulingStore';
+import { addSchedule } from '@/app/lib/actions/scheduleActions';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
-export default function ScheduleSummary() {
+type DayKey =
+  | 'monday'
+  | 'tuesday'
+  | 'wednesday'
+  | 'thursday'
+  | 'friday'
+  | 'saturday'
+  | 'sunday';
+
+export default function ScheduleSummary({ userId }: { userId: string }) {
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const {
     scheduleName,
     days,
@@ -13,18 +29,55 @@ export default function ScheduleSummary() {
     selectedTimeSlots,
     getSelectedTimeSlots,
     allAvailableDays,
+    selectedInterval,
+    reset,
   } = useSchedulingStore();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data = {
-      scheduleName,
-      days,
-      dayTimeSlots,
-      duration,
-      selectedTimeSlots,
-    };
-    console.log('Form Data:', data);
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      // Get the first available day or use 'all'
+      const firstAvailableDay =
+        (Object.keys(days) as DayKey[]).find((day) => days[day]) || 'all';
+
+      // Get time slots with fallback to defaults
+      const timeSlot = dayTimeSlots[
+        allAvailableDays ? 'all' : firstAvailableDay
+      ] || {
+        startTime: '09:00',
+        endTime: '17:00',
+      };
+
+      const formData = new FormData();
+      formData.append('userId', userId);
+      formData.append('scheduleName', scheduleName);
+      formData.append('timeInterval', selectedInterval.toString());
+      formData.append('duration', duration.toString());
+      formData.append('maxDuration', duration.toString()); // Using duration as maxDuration for now
+      formData.append('startTime', timeSlot.startTime);
+      formData.append('endTime', timeSlot.endTime);
+      formData.append('days', JSON.stringify(days));
+      formData.append('selectedTimeSlots', JSON.stringify(selectedTimeSlots));
+      formData.append('allAvailableDays', allAvailableDays.toString());
+
+      const result = await addSchedule(formData);
+
+      if (result.success) {
+        reset(); // Reset the store state
+        router.push('/dashboard/scheduling'); // Redirect to scheduling page after success
+      } else {
+        setError(result.error || 'Failed to create schedule');
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : 'An unexpected error occurred'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const formatTime = (time: string) => {
@@ -64,6 +117,11 @@ export default function ScheduleSummary() {
     <DashboardCard title='Schedule Summary' containerStyles='mt-4 mb-16'>
       <form onSubmit={handleSubmit}>
         <div className='flex flex-col gap-4'>
+          {error && (
+            <div className='bg-red-50 border border-red-200 text-red-600 px-4 py-2 rounded-lg'>
+              {error}
+            </div>
+          )}
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <div className='flex flex-row justify-between gap-2 border border-gray-300 rounded-lg p-2 px-4'>
               <p className='text-sm font-bold text-gray-500'>Schedule Name:</p>
@@ -131,7 +189,9 @@ export default function ScheduleSummary() {
           </div>
 
           <div className='flex justify-end'>
-            <ButtonPrimary type='submit'>Save Schedule</ButtonPrimary>
+            <ButtonPrimary type='submit'>
+              {isSubmitting ? 'Saving...' : 'Save Schedule'}
+            </ButtonPrimary>
           </div>
         </div>
       </form>

@@ -1,4 +1,4 @@
-import SubPageHeading from '@/app/ui/pageHeadings/SubPageHeading';
+import SubPageHeading from '@/app/ui/dashboard/pageHeadings/SubPageHeading';
 import PostEditorWrapper from './components/PostEditorWrapper';
 import { createClient } from '@/app/lib/supabase/server';
 
