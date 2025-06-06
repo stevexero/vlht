@@ -5,6 +5,7 @@ import DashboardCard from '@/app/ui/dashboard/card/DashboardCard';
 import CheckBox from '@/app/ui/dashboard/input/CheckBox';
 import TimeInput from '@/app/ui/dashboard/input/TimeInput';
 import { useEffect, useState } from 'react';
+import TimeSlots from './TimeSlots';
 
 const DAYS = [
   { key: 'monday', label: 'Monday' },
@@ -90,6 +91,8 @@ export default function StartEndTime() {
           />
         </div>
       </div>
+      <hr className='my-4 border-2 border-t-gray-300 border-l-gray-300 border-b-neutral-100 border-r-neutral-100 drop-shadow-xs drop-shadow-white' />
+      <TimeSlots />
     </DashboardCard>
   );
 }

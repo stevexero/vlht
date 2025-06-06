@@ -14,7 +14,9 @@ export default async function Layout({
           <Sidebar />
         </Suspense>
         {/* <div className='w-full grid grid-cols-1 md:grid-cols-4 gap-8'> */}
-        <div className='w-full bg-gray-200 flex justify-center'>{children}</div>
+        <div className='w-full bg-gray-200 flex justify-center max-h-screen overflow-y-scroll'>
+          {children}
+        </div>
       </div>
     </div>
   );

@@ -25,7 +25,7 @@ export default function TimeInput({
         type='time'
         value={value}
         onChange={onChange}
-        className={`w-full p-2 bg-white border border-gray-300 rounded-lg inset-shadow-2xs inset-shadow-gray-400/50 focus:outline-none focus:ring-1 focus:ring-blue-400 ${className}`}
+        className={`p-2 bg-white border border-gray-300 rounded-lg inset-shadow-2xs inset-shadow-gray-400/50 focus:outline-none focus:ring-1 focus:ring-blue-400 ${className}`}
       />
     </div>
   );

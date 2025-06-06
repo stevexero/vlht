@@ -7,6 +7,8 @@ import { createClient } from '@/app/lib/supabase/server';
 import TimeInterval from './components/TimeInterval';
 import DaySelector from './components/DaySelector';
 import StartEndTime from './components/StartEndTime';
+import Duration from './components/Duration';
+import ScheduleSummary from './components/ScheduleSummary';
 
 export default async function page() {
   const supabase = await createClient();
@@ -45,6 +47,8 @@ export default async function page() {
           <TimeInterval />
           <DaySelector />
           <StartEndTime />
+          <Duration />
+          <ScheduleSummary />
         </div>
       </div>
     </div>

@@ -19,6 +19,10 @@ interface DayTimeSlots {
   [key: string]: TimeSlot;
 }
 
+interface SelectedTimeSlots {
+  [key: string]: string[];
+}
+
 interface SchedulingStoreProps {
   scheduleName: string;
   setScheduleName: (scheduleName: string) => void;
@@ -38,6 +42,13 @@ interface SchedulingStoreProps {
 
   allAvailableDays: boolean;
   setAllAvailableDays: (allAvailableDays: boolean) => void;
+
+  duration: number;
+  setDuration: (duration: number) => void;
+
+  selectedTimeSlots: SelectedTimeSlots;
+  toggleTimeSlot: (day: string, timeValue: string) => void;
+  getSelectedTimeSlots: (day: string) => string[];
 }
 
 const DEFAULT_TIME_SLOT: TimeSlot = {
@@ -81,4 +92,27 @@ export const useSchedulingStore = create<SchedulingStoreProps>((set, get) => ({
 
   allAvailableDays: true,
   setAllAvailableDays: (allAvailableDays) => set({ allAvailableDays }),
+
+  duration: 60,
+  setDuration: (duration) => set({ duration }),
+
+  selectedTimeSlots: {},
+  toggleTimeSlot: (day, timeValue) =>
+    set((state) => {
+      const currentSlots = state.selectedTimeSlots[day] || [];
+      const newSlots = currentSlots.includes(timeValue)
+        ? currentSlots.filter((time) => time !== timeValue)
+        : [...currentSlots, timeValue];
+
+      return {
+        selectedTimeSlots: {
+          ...state.selectedTimeSlots,
+          [day]: newSlots,
+        },
+      };
+    }),
+  getSelectedTimeSlots: (day) => {
+    const state = get();
+    return state.selectedTimeSlots[day] || [];
+  },
 }));
