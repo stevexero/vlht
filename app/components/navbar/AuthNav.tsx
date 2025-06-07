@@ -14,9 +14,9 @@ export default function AuthNav({ pathname, user }: AuthNavProps) {
         pathname.startsWith('/dashboard')
           ? 'border-b border-gray-400 bg-white'
           : 'bg-gray-100'
-      } flex justify-between items-center z-10`}
+      } flex justify-between items-center z-20`}
     >
-      <LogoLink pathname={pathname} className='w-8' />
+      <LogoLink pathname='/' className='w-8' />
       <div>{user && <UserMenu user={user} />}</div>
     </nav>
   );

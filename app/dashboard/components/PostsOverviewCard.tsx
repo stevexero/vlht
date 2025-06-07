@@ -1,3 +1,4 @@
+import DashboardCard from '@/app/ui/dashboard/card/DashboardCard';
 import { User } from '@supabase/supabase-js';
 import React from 'react';
 
@@ -25,12 +26,11 @@ export default function PostsOverviewCard({
   );
   const myDrafts = drafts.filter((post) => post.author_id === user?.id);
   return (
-    <div className='bg-white rounded-lg shadow-md p-4'>
-      <h2 className='text-2xl font-bold'>Posts Overview</h2>
+    <DashboardCard title='Posts Overview' containerStyles='mb-16 md:mb-0'>
       <p>Total Published Posts: {publishedPosts.length}</p>
       <p>Total Drafts: {drafts.length}</p>
       <p>My Total Published Posts: {myPublishedPosts.length}</p>
       <p>My Total Drafts: {myDrafts.length}</p>
-    </div>
+    </DashboardCard>
   );
 }

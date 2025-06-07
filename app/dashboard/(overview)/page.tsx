@@ -3,6 +3,8 @@ import { Suspense } from 'react';
 import { createClient } from '@/app/lib/supabase/server';
 import PostsOverviewCard from '../components/PostsOverviewCard';
 import { fetchAllPosts } from '@/app/lib/data/postData';
+import { fetchTrafficData } from '@/app/lib/data/trafficData';
+import TrafficOverviewCard from '../components/TrafficOverviewCard';
 // import ProfileCard from '@/app/dashboard/components/ProfileCard';
 export default async function page() {
   const supabase = await createClient();
@@ -17,6 +19,22 @@ export default async function page() {
 
   // const userProfile = await fetchUserProfileByUserId(user!.id);
   const posts = await fetchAllPosts();
+  let traffic;
+  try {
+    traffic = await fetchTrafficData();
+  } catch (error) {
+    console.error('Traffic data fetch failed:', error);
+    traffic = {
+      stats: {
+        pageviews: { value: 0 },
+        visitors: { value: 0 },
+        bounces: { value: 0 },
+        visits: { value: 0 },
+      },
+      pageviews: [],
+      referrers: [],
+    };
+  }
 
   return (
     <div className='w-full ml-8 md:ml-72 mt-24 md:mt-16'>
@@ -24,6 +42,9 @@ export default async function page() {
         {/* <Suspense fallback={<div>Loading...</div>}>
           <ProfileCard user={user!} userProfile={userProfile} />
         </Suspense> */}
+        <Suspense fallback={<div>Loading...</div>}>
+          <TrafficOverviewCard traffic={traffic} />
+        </Suspense>
         <Suspense fallback={<div>Loading...</div>}>
           <PostsOverviewCard posts={posts.data || []} user={user} />
         </Suspense>

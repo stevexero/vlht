@@ -8,6 +8,7 @@ interface ListItemLinkProps {
   icon: React.ReactNode;
   text: string;
   className?: string;
+  onClick?: () => void;
 }
 
 export default function ListItemLink({
@@ -15,6 +16,7 @@ export default function ListItemLink({
   icon,
   text,
   className,
+  onClick,
 }: ListItemLinkProps) {
   const { isOpen } = useNavStore();
   const pathname = usePathname();
@@ -35,7 +37,7 @@ export default function ListItemLink({
 
   return (
     <li className={className}>
-      <Link href={href} className={getLinkClassName(href)}>
+      <Link href={href} className={getLinkClassName(href)} onClick={onClick}>
         {icon}
         {isOpen ? text : ''}
       </Link>

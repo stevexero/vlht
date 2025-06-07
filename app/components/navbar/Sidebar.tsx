@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { BiFoodMenu } from 'react-icons/bi';
 import { FaTimes } from 'react-icons/fa';
 import { useNavStore } from './navStore';
@@ -9,10 +8,8 @@ import SidebarList from './SidebarList';
 import { usePostsStore } from '@/app/store/store';
 
 export default function SideNav() {
-  const { isOpen, setIsOpen } = useNavStore();
+  const { isOpen, setIsOpen, isMobileOpen, setIsMobileOpen } = useNavStore();
   const { isFullScreen } = usePostsStore();
-
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   return (
     <>

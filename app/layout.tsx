@@ -5,6 +5,7 @@ import ZFooter from './components/footer/ZFooter';
 import ZNavbar from './components/navbar/ZNavbar';
 import './globals.css';
 import ToastContainer from './ui/ToastContainer';
+import Script from 'next/script';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -47,6 +48,16 @@ export default async function RootLayout({
 
   return (
     <html lang='en'>
+      <head>
+        {process.env.NODE_ENV === 'production' && (
+          <Script
+            src='https://cloud.umami.is/script.js'
+            data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
+            strategy='afterInteractive'
+            defer
+          />
+        )}
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${allura.variable} ${rajdhani.variable} min-h-screen antialiased flex flex-col`}
       >
