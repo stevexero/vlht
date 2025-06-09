@@ -5,6 +5,8 @@ import { IoMdSettings } from 'react-icons/io';
 import { MdDashboard, MdPostAdd } from 'react-icons/md';
 import { useNavStore } from './navStore';
 import { IoCalendarOutline } from 'react-icons/io5';
+import ListItemDropdown from '@/app/ui/dashboard/dropdowns/ListItemDropdown';
+import { FaAngleDown, FaClipboardUser } from 'react-icons/fa6';
 
 export default function SidebarList() {
   const { isOpen, isMobileOpen, setIsMobileOpen } = useNavStore();
@@ -14,6 +16,22 @@ export default function SidebarList() {
       setIsMobileOpen(false);
     }
   };
+
+  const settingsItems = [
+    <div key='rols'>
+      <ListItemLink
+        href={`/dashboard/roles`}
+        icon={
+          <>
+            <FaAngleDown className='rotate-45 opacity-50' />
+            <FaClipboardUser />
+          </>
+        }
+        text='Roles'
+        onClick={closeMobileMenu}
+      />
+    </div>,
+  ];
 
   return (
     <ul className='flex flex-col mt-0 md:mt-8 ml-8 md:ml-0'>
@@ -46,15 +64,14 @@ export default function SidebarList() {
         text='Posts'
         onClick={closeMobileMenu}
       />
-      <ListItemLink
-        href={`/dashboard/settings`}
+      <ListItemDropdown
+        title='Settings'
         icon={
           <IoMdSettings
             className={`text-lg ${isOpen ? 'mr-2' : 'mr-1 mt-[2px]'}`}
           />
         }
-        text='Settings'
-        onClick={closeMobileMenu}
+        items={settingsItems}
       />
     </ul>
   );

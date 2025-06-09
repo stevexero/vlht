@@ -6,17 +6,19 @@ export default function MainPageHeading({
   linkText,
 }: {
   title: string;
-  link: string;
-  linkText: string;
+  link?: string;
+  linkText?: string;
 }) {
   return (
     <div className='flex justify-between items-center'>
       <h1 className='text-2xl font-bold text-gray-600 text-shadow-2xs text-shadow-white'>
         {title}
       </h1>
-      <LinkButton href={link} className='mr-8'>
-        {linkText}
-      </LinkButton>
+      {link && linkText && (
+        <LinkButton href={link} className='mr-8'>
+          {linkText}
+        </LinkButton>
+      )}
     </div>
   );
 }

@@ -43,12 +43,12 @@ export default function UserMenu({ user }: UserMenuProps) {
             <p className='text-gray-500'>{user?.email}</p>
           </div>
           <Link
-            href='/dashboard/account'
+            href='/dashboard/profile'
             className='px-3 py-1 mt-2 flex items-center gap-1 rounded hover:bg-gray-100 hover:text-gray-600 focus:bg-gray-100 focus:text-gray-600 focus:outline-none cursor-pointer'
             onClick={() => setIsOpen(false)}
           >
             <IoMdSettings />
-            <p>Account Settings</p>
+            <p>Profile Settings</p>
           </Link>
           <form action={logoutAction}>
             <button
