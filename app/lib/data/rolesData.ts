@@ -13,3 +13,21 @@ export const getRoleLevels = async () => {
     data: data,
   };
 };
+
+export const getRoleLevelById = async (id: string) => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('role_levels')
+    .select('*')
+    .eq('id', id)
+    .single();
+  if (error) {
+    return { success: false, message: error.message, data: null };
+  }
+  return {
+    success: true,
+    message: 'Role level fetched successfully',
+    data: data,
+  };
+};

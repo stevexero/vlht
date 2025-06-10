@@ -60,8 +60,8 @@ export default function TrafficOverviewCard({
         data: traffic.pageviews.length
           ? traffic.pageviews.map((pv) => pv.y)
           : [0],
-        borderColor: '#b91c1c', // Vegas red
-        backgroundColor: 'rgba(185, 28, 28, 0.2)',
+        borderColor: '#155dfc',
+        backgroundColor: 'rgba(21, 93, 252, 0.2)',
         tension: 0.3,
         fill: true,
       },

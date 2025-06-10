@@ -34,16 +34,15 @@ function Droppable({
   children: React.ReactNode;
 }) {
   const { isOver, setNodeRef } = useDroppable({ id });
-  const style = {
-    backgroundColor: isOver ? '#e6fffa' : '#f3f4f6',
-    padding: '16px',
-    borderRadius: '8px',
-    minHeight: '200px',
-  };
-
   return (
-    <div ref={setNodeRef} style={style} className='flex flex-col gap-4'>
-      {children}
+    <div
+      ref={setNodeRef}
+      className={`relative flex flex-col gap-2 bg-gradient-to-br from-white via-white to-neutral-100/50 shadow-lg shadow-gray-400/30 border border-neutral-400 rounded-lg p-4 overflow-hidden ${
+        isOver ? 'bg-blue-50' : ''
+      }`}
+    >
+      <div className='absolute inset-0 bg-gradient-to-br from-white/50 to-transparent pointer-events-none' />
+      <div className='relative z-10'>{children}</div>
     </div>
   );
 }
@@ -63,11 +62,6 @@ function Draggable({
   });
   const style = {
     transform: CSS.Translate.toString(transform),
-    backgroundColor: '#ffffff',
-    padding: '16px',
-    borderRadius: '8px',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-    marginBottom: '8px',
   };
 
   return (
@@ -76,9 +70,10 @@ function Draggable({
       style={style}
       {...listeners}
       {...attributes}
-      className='flex flex-col gap-2'
+      className='relative flex flex-col gap-2 bg-gradient-to-br from-white via-white to-neutral-100/50 shadow-lg shadow-gray-400/30 border border-neutral-400 rounded-lg p-4 overflow-hidden cursor-move'
     >
-      {children}
+      <div className='absolute inset-0 bg-gradient-to-br from-white/50 to-transparent pointer-events-none' />
+      <div className='relative z-10'>{children}</div>
     </div>
   );
 }
@@ -177,112 +172,126 @@ export default function DndPosts({
     <DndContext onDragEnd={handleDragEnd}>
       <div className='grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 mr-8'>
         <Droppable id='drafts'>
-          <h2 className='text-lg font-bold mb-2'>My Drafts</h2>
+          <h3 className='text-lg font-bold text-gray-600 text-shadow-2xs text-shadow-white'>
+            My Drafts
+          </h3>
           {drafts.length === 0 ? (
             <p className='text-sm text-gray-500'>No drafts available</p>
           ) : (
-            drafts.map((post) => (
-              <Draggable key={post.id} id={post.id} data={{ type: 'post' }}>
-                <div aria-label={`Draft post: ${post.title}`}>
-                  <div className='flex justify-between items-start'>
-                    <h3 className='font-bold'>{post.title}</h3>
-                    <div className='flex flex-row gap-2'>
-                      {post.published_to_mailchimp && (
-                        <p className='bg-gray-300 text-gray-700 border border-gray-900 px-2 py-1 rounded-full text-xs'>
-                          Mailchimp
-                        </p>
-                      )}
-                      {post.published_to_blog && (
-                        <p className='bg-gray-300 text-gray-700 border border-gray-900 px-2 py-1 rounded-full text-xs'>
-                          Blog
-                        </p>
-                      )}
+            <div className='space-y-4'>
+              {drafts.map((post) => (
+                <Draggable key={post.id} id={post.id} data={{ type: 'post' }}>
+                  <div aria-label={`Draft post: ${post.title}`}>
+                    <div className='flex justify-between items-start'>
+                      <h3 className='font-bold'>{post.title}</h3>
+                      <div className='flex flex-row gap-2'>
+                        {post.published_to_mailchimp && (
+                          <p className='bg-gray-300 text-gray-700 border border-gray-900 px-2 py-1 rounded-full text-xs'>
+                            Mailchimp
+                          </p>
+                        )}
+                        {post.published_to_blog && (
+                          <p className='bg-gray-300 text-gray-700 border border-gray-900 px-2 py-1 rounded-full text-xs'>
+                            Blog
+                          </p>
+                        )}
+                      </div>
                     </div>
+                    <Link href={`/dashboard/posts/edit?id=${post.id}`}>
+                      <button className='bg-blue-500 text-white px-4 py-2 rounded-md mt-2'>
+                        Edit
+                      </button>
+                    </Link>
                   </div>
-                  <Link href={`/dashboard/posts/edit?id=${post.id}`}>
-                    <button className='bg-blue-500 text-white px-4 py-2 rounded-md mt-2'>
-                      Edit
-                    </button>
-                  </Link>
-                </div>
-              </Draggable>
-            ))
+                </Draggable>
+              ))}
+            </div>
           )}
         </Droppable>
 
         <Droppable id='published'>
-          <h2 className='text-lg font-bold mb-2'>My Published Posts</h2>
+          <h3 className='text-lg font-bold text-gray-600 text-shadow-2xs text-shadow-white'>
+            My Published Posts
+          </h3>
           {published.length === 0 ? (
             <p className='text-sm text-gray-500'>No published posts</p>
           ) : (
-            published.map((post) => (
-              <Draggable key={post.id} id={post.id} data={{ type: 'post' }}>
-                <div aria-label={`Published post: ${post.title}`}>
-                  <div className='flex justify-between items-start'>
-                    <h3 className='font-bold'>{post.title}</h3>
-                    <div className='flex flex-row gap-2'>
-                      {post.published_to_mailchimp && (
-                        <p className='bg-gray-300 text-gray-700 border border-gray-900 px-2 py-1 rounded-full text-xs'>
-                          Mailchimp
-                        </p>
-                      )}
-                      {post.published_to_blog && (
-                        <p className='bg-gray-300 text-gray-700 border border-gray-900 px-2 py-1 rounded-full text-xs'>
-                          Blog
-                        </p>
-                      )}
+            <div className='space-y-4'>
+              {published.map((post) => (
+                <Draggable key={post.id} id={post.id} data={{ type: 'post' }}>
+                  <div aria-label={`Published post: ${post.title}`}>
+                    <div className='flex justify-between items-start'>
+                      <h3 className='font-bold'>{post.title}</h3>
+                      <div className='flex flex-row gap-2'>
+                        {post.published_to_mailchimp && (
+                          <p className='bg-gray-300 text-gray-700 border border-gray-900 px-2 py-1 rounded-full text-xs'>
+                            Mailchimp
+                          </p>
+                        )}
+                        {post.published_to_blog && (
+                          <p className='bg-gray-300 text-gray-700 border border-gray-900 px-2 py-1 rounded-full text-xs'>
+                            Blog
+                          </p>
+                        )}
+                      </div>
                     </div>
+                    <Link href={`/dashboard/posts/edit?id=${post.id}`}>
+                      <button className='bg-blue-500 text-white px-4 py-2 rounded-md mt-2'>
+                        View
+                      </button>
+                    </Link>
                   </div>
-                  <Link href={`/dashboard/posts/edit?id=${post.id}`}>
-                    <button className='bg-blue-500 text-white px-4 py-2 rounded-md mt-2'>
-                      View
-                    </button>
-                  </Link>
-                </div>
-              </Draggable>
-            ))
+                </Draggable>
+              ))}
+            </div>
           )}
         </Droppable>
 
-        {/* Other Users Posts */}
-        <div className='bg-gray-100 p-4 rounded-md'>
-          <h2 className='text-lg font-bold mb-2'>Posts by Others</h2>
-          {otherPosts.length === 0 ? (
-            <p className='text-sm text-gray-500'>No posts</p>
-          ) : (
-            otherPosts.map((post) => (
-              <div
-                key={post.id}
-                id={post.id}
-                className='bg-white p-4 rounded-md shadow-sm mt-6'
-              >
-                <div aria-label={`Published post: ${post.title}`}>
-                  <div className='flex justify-between items-start'>
-                    <h3 className='font-bold'>{post.title}</h3>
-                    <div className='flex flex-row gap-2'>
-                      {post.published_to_mailchimp && (
-                        <p className='bg-gray-300 text-gray-700 border border-gray-900 px-2 py-1 rounded-full text-xs'>
-                          Mailchimp
-                        </p>
-                      )}
-                      {post.published_to_blog && (
-                        <p className='bg-gray-300 text-gray-700 border border-gray-900 px-2 py-1 rounded-full text-xs'>
-                          Blog
-                        </p>
-                      )}
+        <div className='relative flex flex-col gap-2 bg-gradient-to-br from-white via-white to-neutral-100/50 shadow-lg shadow-gray-400/30 border border-neutral-400 rounded-lg p-4 overflow-hidden'>
+          <div className='absolute inset-0 bg-gradient-to-br from-white/50 to-transparent pointer-events-none' />
+          <div className='relative z-10'>
+            <h3 className='text-lg font-bold text-gray-600 text-shadow-2xs text-shadow-white'>
+              Posts by Others
+            </h3>
+            {otherPosts.length === 0 ? (
+              <p className='text-sm text-gray-500'>No posts</p>
+            ) : (
+              <div className='space-y-4'>
+                {otherPosts.map((post) => (
+                  <div
+                    key={post.id}
+                    className='relative flex flex-col gap-2 bg-gradient-to-br from-white via-white to-neutral-100/50 shadow-lg shadow-gray-400/30 border border-neutral-400 rounded-lg p-4 overflow-hidden'
+                  >
+                    <div className='absolute inset-0 bg-gradient-to-br from-white/50 to-transparent pointer-events-none' />
+                    <div className='relative z-10'>
+                      <div className='flex justify-between items-start'>
+                        <h3 className='font-bold'>{post.title}</h3>
+                        <div className='flex flex-row gap-2'>
+                          {post.published_to_mailchimp && (
+                            <p className='bg-gray-300 text-gray-700 border border-gray-900 px-2 py-1 rounded-full text-xs'>
+                              Mailchimp
+                            </p>
+                          )}
+                          {post.published_to_blog && (
+                            <p className='bg-gray-300 text-gray-700 border border-gray-900 px-2 py-1 rounded-full text-xs'>
+                              Blog
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <Link
+                        href={`/dashboard/posts/edit?id=${post.id}&viewonly=true`}
+                      >
+                        <button className='bg-blue-500 text-white px-4 py-2 rounded-md mt-2'>
+                          View
+                        </button>
+                      </Link>
                     </div>
                   </div>
-                  <Link
-                    href={`/dashboard/posts/edit?id=${post.id}&viewonly=true`}
-                  >
-                    <button className='bg-blue-500 text-white px-4 py-2 rounded-md mt-2'>
-                      View
-                    </button>
-                  </Link>
-                </div>
+                ))}
               </div>
-            ))
-          )}
+            )}
+          </div>
         </div>
       </div>
     </DndContext>

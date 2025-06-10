@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import DndPosts from './components/DndPosts';
 import { Suspense } from 'react';
 import MainPageHeading from '@/app/ui/dashboard/pageHeadings/MainPageHeading';
+import Link from 'next/link';
 
 export default async function page() {
   const supabase = await createClient();
@@ -28,13 +29,29 @@ export default async function page() {
         link='/dashboard/posts/edit?newpost=true'
         linkText='Add Post'
       />
-      <div className='mt-4 mr-8'>
-        <div className='flex flex-col gap-4'>
-          <Suspense fallback={<div>Loading...</div>}>
-            <DndPosts posts={posts.data || []} user={user} />
-          </Suspense>
+      {posts.data && posts.data.length <= 0 ? (
+        <div className='mt-4'>
+          <div className='flex flex-row items-center gap-4'>
+            <p className='text-lg font-bold text-gray-600 text-shadow-2xs text-shadow-white'>
+              No posts created yet.
+            </p>
+            <Link
+              href='/dashboard/posts/edit?newpost=true'
+              className='text-lg font-bold text-blue-600 text-shadow-2xs text-shadow-white underline'
+            >
+              Create one now!
+            </Link>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className='mt-4'>
+          <div className='flex flex-col gap-4'>
+            <Suspense fallback={<div>Loading...</div>}>
+              <DndPosts posts={posts.data || []} user={user} />
+            </Suspense>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

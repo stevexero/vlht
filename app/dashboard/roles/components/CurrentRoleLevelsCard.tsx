@@ -9,7 +9,7 @@ interface RoleLevel {
   updated_at: string;
 }
 
-export default function CurrentRolesCard({
+export default function CurrentRoleLevelsCard({
   roleLevels,
 }: {
   roleLevels: RoleLevel[];
