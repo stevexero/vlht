@@ -3,7 +3,7 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { IoMdArrowDroprightCircle } from 'react-icons/io';
+import { IoMdArrowDroprightCircle, IoMdQuote } from 'react-icons/io';
 
 interface Review {
   author_name: string;
@@ -103,16 +103,23 @@ export default function ReviewsClient({ reviews }: { reviews: Review[] }) {
                 key={review.author_url}
                 className='bg-gradient-to-br from-blue-950/90 via-blue-700/90 to-blue-950/90 backdrop-blur-sm shadow-lg shadow-black/50 p-4 rounded-lg'
               >
-                <div className='flex items-center gap-1'>
-                  {renderStars(review.rating)}&nbsp;
-                  <span className='text-xs text-gray-300'>
-                    {review.rating}/5
-                  </span>
+                <div className='flex items-center justify-between'>
+                  <div>
+                    <div className='flex items-center gap-1'>
+                      {renderStars(review.rating)}&nbsp;
+                      <span className='text-xs text-gray-300'>
+                        {review.rating}/5
+                      </span>
+                    </div>
+                    <div className='text-xs text-gray-300'>
+                      {review.relative_time_description}
+                    </div>
+                  </div>
+                  <div>
+                    <IoMdQuote className='text-blue-500' size={72} />
+                  </div>
                 </div>
-                <div className='text-xs text-gray-300'>
-                  {review.relative_time_description}
-                </div>
-                <div className='flex items-center gap-2 mt-4'>
+                <div className='flex items-center gap-2 mt-2'>
                   <Image
                     src={review.profile_photo_url}
                     alt={review.author_name}
