@@ -52,7 +52,7 @@ export default function ListItemDropdown({
       </li>
 
       {isOpen && isSidebarOpen && (
-        <div className='ml-2 space-y-2'>
+        <div className='space-y-2'>
           {items.map((item, index) => (
             <div key={index}>{item}</div>
           ))}

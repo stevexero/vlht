@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
     domains: [
       // 'exftxjchbbtiozuejdks.supabase.co',
       'xklaxpzwmgbffwufaxgo.supabase.co',
+      'lh3.googleusercontent.com',
     ],
   },
 };

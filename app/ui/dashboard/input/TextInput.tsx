@@ -3,11 +3,13 @@ export default function TextInput({
   onChange,
   className,
   label,
+  disabled,
 }: {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
   label?: string;
+  disabled?: boolean;
 }) {
   const sanitizeLabel = (text: string) => {
     return text.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
@@ -24,7 +26,10 @@ export default function TextInput({
         type='text'
         value={value}
         onChange={onChange}
-        className={`w-full p-2 bg-white border border-gray-300 rounded-lg inset-shadow-2xs inset-shadow-gray-400/50 focus:outline-none focus:ring-1 focus:ring-blue-400 ${className}`}
+        className={`w-full p-2 border border-gray-300 rounded-lg inset-shadow-2xs inset-shadow-gray-400/50 focus:outline-none focus:ring-1 focus:ring-blue-400 ${
+          disabled ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'
+        } ${className}`}
+        disabled={disabled}
       />
     </div>
   );

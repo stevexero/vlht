@@ -26,8 +26,6 @@ export default async function page() {
   const profile = await fetchUserProfileByUserId(user.id);
   const roleLevel = await getRoleLevelById(profile.data?.role_level);
 
-  console.log(roleLevel.data?.name);
-
   return (
     <div className='w-full ml-8 md:ml-72 mt-24 md:mt-16'>
       <MainPageHeading title='Roles' />

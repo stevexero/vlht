@@ -18,7 +18,7 @@ export default function SidebarList() {
   };
 
   const settingsItems = [
-    <div key='rols'>
+    <div key='roles'>
       <ListItemLink
         href={`/dashboard/roles`}
         icon={
