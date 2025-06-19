@@ -5,7 +5,7 @@ export default async function ZReviews() {
   const reviews = await fetchGoogleReviews();
 
   return (
-    <div>
+    <div id='reviews'>
       <ReviewsClient reviews={reviews} />
     </div>
   );

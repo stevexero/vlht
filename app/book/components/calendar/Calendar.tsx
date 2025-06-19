@@ -159,7 +159,7 @@ export default function Calendar({
   };
 
   return (
-    <div className='bg-gray-100 rounded-xl shadow-lg p-1 md:p-6 border border-gray-300 mt-48 md:mt-0'>
+    <div className='bg-gray-100 rounded-xl shadow-lg p-1 md:p-6 border border-gray-300 mt-48 md:mt-0 sticky top-32'>
       <div className='flex items-center justify-between mb-6'>
         <button
           onClick={handlePrevMonth}

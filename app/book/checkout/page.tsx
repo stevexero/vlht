@@ -1,8 +1,16 @@
 import React, { Suspense } from 'react';
 import CheckoutForm from './components/checkoutForm/CheckoutForm';
 import Header from './components/header/Header';
+import { fetchAllUserProfiles } from '@/app/lib/data/userData';
 
-export default function page() {
+export default async function page() {
+  let allProfiles = [];
+
+  const profilesResponse = await fetchAllUserProfiles();
+  if (profilesResponse.data) {
+    allProfiles = profilesResponse.data;
+  }
+
   return (
     <div
       className='w-full'
@@ -17,7 +25,7 @@ export default function page() {
         <div className='w-full -mt-96 md:-mt-64 mb-16 relative'>
           <div className='w-full'>
             <Suspense fallback={<div>Loading...</div>}>
-              <CheckoutForm />
+              <CheckoutForm allProfiles={allProfiles} />
             </Suspense>
           </div>
         </div>

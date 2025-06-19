@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useBookingStore } from '@/app/store/store';
 import { useRouter } from 'next/navigation';
 
@@ -12,11 +12,37 @@ interface GuestInfo {
 }
 
 export default function GuestBasicInfo() {
-  const { guestCount, setGuests } = useBookingStore();
+  const { guestCount, setGuests, selectedTime } = useBookingStore();
   const [currentStep, setCurrentStep] = useState(0);
   const [guests, setLocalGuests] = useState<GuestInfo[]>([]);
   const [emailError, setEmailError] = useState('');
+  const emailInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+
+  // Check if we should autofocus the email input
+  useEffect(() => {
+    if (
+      typeof window !== 'undefined' &&
+      window.location.hash === '#guest-info'
+    ) {
+      console.log('Hash detected, attempting to autofocus email input');
+      // Use setTimeout to ensure the component is fully rendered
+      const timer = setTimeout(() => {
+        console.log('Timer fired, checking conditions:', {
+          hasRef: !!emailInputRef.current,
+          currentStep,
+          guestsLength: guests.length,
+        });
+        if (emailInputRef.current && currentStep === 0 && guests.length > 0) {
+          console.log('Focusing email input');
+          emailInputRef.current.focus();
+        }
+      }, 100);
+
+      return () => clearTimeout(timer);
+    }
+  }, [currentStep, guests.length]);
+
   // Initialize guests when guestCount changes
   useEffect(() => {
     if (guestCount > 0) {
@@ -143,15 +169,18 @@ export default function GuestBasicInfo() {
   //   }
 
   return (
-    <div className='w-full bg-gray-100 rounded-xl shadow-lg p-6 border border-gray-300 relative'>
+    <div
+      id='guest-info'
+      className='w-full bg-gray-100 rounded-xl shadow-lg p-6 border border-gray-300 relative'
+    >
       <div
         className={`${
-          !guestCount
+          !selectedTime
             ? 'absolute top-0 left-0 w-full h-full bg-gray-100/90 cursor-not-allowed flex items-center justify-center z-10 rounded-xl'
             : ''
         }`}
       >
-        {!guestCount ? (
+        {!selectedTime ? (
           <p className='text-red-900/50 text-center font-semibold text-lg'>
             Please select a number of guests
           </p>
@@ -183,6 +212,10 @@ export default function GuestBasicInfo() {
               className={`w-full p-2 bg-white border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 ${
                 emailError ? 'border-red-500' : 'border-gray-300'
               }`}
+              autoFocus={currentStep === 0}
+              ref={emailInputRef}
+              disabled={!selectedTime}
+              required
             />
             {emailError && (
               <p className='mt-1 text-xs text-red-500'>{emailError}</p>

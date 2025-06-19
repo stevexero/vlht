@@ -3,14 +3,51 @@ import Header from './components/header/Header';
 // import CompactBookingForm from './components/compactBookingForm/CompactBookingForm';
 import CalendarAndTimeCard from './components/CalendarAndTimeCard';
 import TrackBooking from './components/trackBooking/TrackBooking';
-import { getDaysOfAvailability } from '@/app/lib/data/scheduleData';
+import {
+  getAllSchedules,
+  getAllScheduleTimeSlotsByScheduleId,
+  getAllTimeSlots,
+  getDaysOfAvailability,
+} from '@/app/lib/data/scheduleData';
+import { fetchAllUserProfiles } from '@/app/lib/data/userData';
 
 export default async function page() {
   const response = await getDaysOfAvailability();
 
   let daysOfAvailability = [];
+  let timeSlotsReference = [];
+  const scheduleTimeSlots = [];
+  let schedules = [];
+  let allProfiles = [];
   if (response.data) {
     daysOfAvailability = response.data;
+
+    // Fetch all schedules
+    const schedulesResponse = await getAllSchedules();
+    if (schedulesResponse.data) {
+      schedules = schedulesResponse.data;
+    }
+
+    // Fetch all time slots
+    const timeSlotsResponse = await getAllTimeSlots();
+    if (timeSlotsResponse.data) {
+      timeSlotsReference = timeSlotsResponse.data;
+    }
+
+    // Loop through all schedules and fetch all schedule_time_slots
+    for (const schedule of schedules) {
+      const scheduleTimeSlotsResponse =
+        await getAllScheduleTimeSlotsByScheduleId(schedule.id);
+      if (scheduleTimeSlotsResponse.data) {
+        scheduleTimeSlots.push(scheduleTimeSlotsResponse.data);
+      }
+    }
+
+    // Fetch all user profiles
+    const profilesResponse = await fetchAllUserProfiles();
+    if (profilesResponse.data) {
+      allProfiles = profilesResponse.data;
+    }
   }
 
   return (
@@ -27,7 +64,13 @@ export default async function page() {
           </div>
           <div className='w-full'>
             <Suspense fallback={<div>Loading...</div>}>
-              <CalendarAndTimeCard daysOfAvailability={daysOfAvailability} />
+              <CalendarAndTimeCard
+                daysOfAvailability={daysOfAvailability}
+                timeSlotsReference={timeSlotsReference}
+                schedules={schedules}
+                scheduleTimeSlots={scheduleTimeSlots}
+                allProfiles={allProfiles}
+              />
             </Suspense>
           </div>
           {/* <Blogs posts={posts.data || []} /> */}

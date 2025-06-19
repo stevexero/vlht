@@ -24,7 +24,7 @@ export default function InputField({
   return (
     <>
       <label
-        className={`text-sm -mb-2 ${light ? 'text-gray-600' : 'text-gray-300'}`}
+        className={`text-sm -mb-2 ${light ? 'text-gray-600' : 'text-gray-900'}`}
         htmlFor={id}
       >
         {label}
@@ -35,7 +35,7 @@ export default function InputField({
         id={id}
         aria-required={required}
         className={`text-black rounded-lg ${
-          light ? 'bg-gray-100 border border-gray-400' : 'bg-gray-200'
+          light ? 'bg-gray-100 border border-gray-900' : 'bg-gray-200'
         } p-2 mb-2 focus:outline-cyan-500 active:outline-cyan-500 ${className} ${
           disabled ? 'bg-gray-300' : ''
         }`}

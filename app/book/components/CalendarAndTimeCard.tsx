@@ -5,6 +5,7 @@ import Calendar from './calendar/Calendar';
 import TimeCard from './timeCard/TimeCard';
 import GuestCount from './guestCount/GuestCount';
 import GuestBasicInfo from './guestBasicInfo/GuestBasicInfo';
+import Tourista from './tourista/Tourista';
 
 interface DaysOfAvailabilityProps {
   monday: boolean;
@@ -17,10 +18,48 @@ interface DaysOfAvailabilityProps {
   user_id: string;
 }
 
+interface TimeSlotReferenceProps {
+  id: string;
+  slot_time: string;
+  available: boolean;
+}
+
+interface ScheduleProps {
+  id: string;
+  user_id: string;
+  name: string;
+  days: string; // This should contain the days of the week
+  time_interval: number;
+  duration: number;
+  start_time: string;
+  end_time: string;
+}
+
+interface ScheduleTimeSlotProps {
+  id: string;
+  schedule_id: string;
+  day: string;
+  slot_time_id: number;
+}
+
+interface Profile {
+  id: string;
+  first_name: string;
+  last_name: string;
+}
+
 export default function CalendarAndTimeCard({
   daysOfAvailability,
+  timeSlotsReference,
+  schedules,
+  scheduleTimeSlots,
+  allProfiles,
 }: {
   daysOfAvailability: DaysOfAvailabilityProps[];
+  timeSlotsReference: TimeSlotReferenceProps[];
+  schedules: ScheduleProps[];
+  scheduleTimeSlots: ScheduleTimeSlotProps[][];
+  allProfiles: Profile[];
 }) {
   //   const { isDateSelected } = useBookingStore();
   return (
@@ -39,7 +78,13 @@ export default function CalendarAndTimeCard({
       {/* <div className={`${isDateSelected ? 'block col-span-1' : 'hidden'}`}> */}
       <div className={`block col-span-1`}>
         <div className='flex flex-col gap-4'>
-          <TimeCard />
+          <Tourista schedules={schedules} allProfiles={allProfiles} />
+          <TimeCard
+            timeSlotsReference={timeSlotsReference}
+            schedules={schedules}
+            scheduleTimeSlots={scheduleTimeSlots}
+            allProfiles={allProfiles}
+          />
           <GuestCount />
           <GuestBasicInfo />
         </div>

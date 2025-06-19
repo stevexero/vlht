@@ -19,3 +19,18 @@ export async function fetchUserProfileByUserId(userId: string) {
     data: data,
   };
 }
+
+/***************************/
+/* Fetch All User Profiles */
+/***************************/
+export async function fetchAllUserProfiles() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.from('profiles').select('*');
+
+  if (error) {
+    return { success: false, message: error.message, data: null };
+  }
+
+  return { success: true, message: 'User profiles fetched successfully', data };
+}

@@ -46,6 +46,25 @@ export default function ZNavbar({ user }: NavbarProps) {
     }
   };
 
+  const scrollToReviews = (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    // If we're not on the home page, navigate there first
+    if (pathname !== '/') {
+      window.location.href = '/#reviews';
+      return;
+    }
+
+    // If we're already on the home page, just scroll to the section
+    const reviewsSection = document.getElementById('reviews');
+    if (reviewsSection) {
+      reviewsSection.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+  };
+
   if (
     pathname === '/signup' ||
     pathname === '/login' ||
@@ -168,14 +187,14 @@ export default function ZNavbar({ user }: NavbarProps) {
           >
             ABOUT
           </Link>
-          <Link
-            href='/reviews'
+          <button
+            onClick={scrollToReviews}
             className={`ml-16 hover:text-amber-300 border-t border-transparent hover:border-amber-300 transition-all duration-300 ${
               isScrolled ? 'py-1' : 'py-4'
-            } transition-all duration-300`}
+            } transition-all duration-300 cursor-pointer`}
           >
             REVIEWS
-          </Link>
+          </button>
           <Link
             href='/blog'
             className={`ml-16 hover:text-amber-300 border-t border-transparent hover:border-amber-300 transition-all duration-300 ${

@@ -10,8 +10,19 @@ interface GuestInfo {
   email?: string;
 }
 
-export default function CheckoutForm() {
-  const { selectedDate, selectedTime, guestCount, guests } = useBookingStore();
+interface Profile {
+  id: string;
+  first_name: string;
+  last_name: string;
+}
+
+export default function CheckoutForm({
+  allProfiles,
+}: {
+  allProfiles: Profile[];
+}) {
+  const { selectedDate, selectedTime, guestCount, guests, selectedTourista } =
+    useBookingStore();
 
   const totalAmount = useMemo(() => {
     return guests.reduce((total, guest) => {
@@ -38,6 +49,19 @@ export default function CheckoutForm() {
             Booking Details
           </h3>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+            <div className='bg-gray-50 p-4 rounded-lg'>
+              <p className='text-sm text-gray-600'>Tourista</p>
+              <p className='font-semibold text-gray-800'>
+                {
+                  allProfiles.find((profile) => profile.id === selectedTourista)
+                    ?.first_name
+                }{' '}
+                {
+                  allProfiles.find((profile) => profile.id === selectedTourista)
+                    ?.last_name
+                }
+              </p>
+            </div>
             <div className='bg-gray-50 p-4 rounded-lg'>
               <p className='text-sm text-gray-600'>Date</p>
               <p className='font-semibold text-gray-800'>{selectedDate}</p>

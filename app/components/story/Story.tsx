@@ -4,10 +4,64 @@ import { FC } from 'react';
 import StoryCard from './components/StoryCard';
 import StoryCardPhoto from './components/StoryCardPhoto';
 import StoryCardMobile from './components/StoryCardMobile';
+import CompactBookingForm from '../compactBookingForm/CompactBookingForm';
 
-const Story: FC = () => {
+interface DaysOfAvailabilityProps {
+  monday: boolean;
+  tuesday: boolean;
+  wednesday: boolean;
+  thursday: boolean;
+  friday: boolean;
+  saturday: boolean;
+  sunday: boolean;
+  user_id: string;
+}
+
+interface TimeSlotReferenceProps {
+  id: string;
+  slot_time: string;
+  available: boolean;
+}
+
+interface ScheduleProps {
+  id: string;
+  user_id: string;
+  name: string;
+  days: string;
+  time_interval: number;
+  duration: number;
+  start_time: string;
+  end_time: string;
+}
+
+interface ScheduleTimeSlotProps {
+  id: string;
+  schedule_id: string;
+  day: string;
+  slot_time_id: number;
+}
+
+const Story: FC<{
+  daysOfAvailability: DaysOfAvailabilityProps[];
+  timeSlotsReference?: TimeSlotReferenceProps[];
+  schedules?: ScheduleProps[];
+  scheduleTimeSlots?: ScheduleTimeSlotProps[][];
+}> = ({
+  daysOfAvailability,
+  timeSlotsReference = [],
+  schedules = [],
+  scheduleTimeSlots = [],
+}) => {
   return (
     <div className='w-full'>
+      <div className='w-full max-w-7xl mx-auto relative'>
+        <CompactBookingForm
+          daysOfAvailability={daysOfAvailability}
+          timeSlotsReference={timeSlotsReference}
+          schedules={schedules}
+          scheduleTimeSlots={scheduleTimeSlots}
+        />
+      </div>
       <div className='md:hidden'>
         <div className='w-full'>
           <StoryCardMobile

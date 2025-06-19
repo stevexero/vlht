@@ -50,6 +50,8 @@ export const addSchedule = async (formData: FormData) => {
   );
   const allAvailableDays = formData.get('allAvailableDays') === 'true';
 
+  console.log('selectedTimeSlots', selectedTimeSlots); // Logs 'selectedTimeSlots { all: [ '09:00', '10:00', '11:00', '13:00', '17:00' ] }'
+
   try {
     // First create the days record
     const { data: daysData, error: daysError } = await supabase
@@ -87,38 +89,57 @@ export const addSchedule = async (formData: FormData) => {
 
     if (scheduleError) throw scheduleError;
 
-    // Get time slot IDs for the selected times
+    // Get all time slots from database
     const { data: timeSlotsData, error: timeSlotsError } = await supabase
       .from('time_slots_reference')
-      .select('id, slot_time')
-      .in('slot_time', Object.values(selectedTimeSlots).flat());
+      .select('id, slot_time');
 
     if (timeSlotsError) throw timeSlotsError;
 
-    // Create a map of time strings to IDs
+    // Create a map of time strings to IDs (using HH:MM format as key)
     const timeSlotMap = new Map(
-      timeSlotsData.map((slot) => [slot.slot_time, slot.id])
+      timeSlotsData.map((slot) => [slot.slot_time.substring(0, 5), slot.id])
     );
 
     // Prepare time slot insertions
     const timeSlotInserts = [];
-    const daysToProcess = allAvailableDays
-      ? ['all']
-      : Object.keys(days).filter((day) => days[day]);
 
-    for (const day of daysToProcess) {
-      const slots = selectedTimeSlots[day] || [];
-      for (const slotTime of slots) {
-        const slotTimeId = timeSlotMap.get(slotTime);
-        if (slotTimeId) {
-          timeSlotInserts.push({
-            schedule_id: scheduleData.id,
-            day,
-            slot_time_id: slotTimeId,
-          });
+    if (allAvailableDays) {
+      // If all available days, use the 'all' time slots for each available day
+      const allTimeSlots = selectedTimeSlots.all || [];
+      const availableDayNames = Object.keys(days).filter((day) => days[day]);
+
+      for (const day of availableDayNames) {
+        for (const slotTime of allTimeSlots) {
+          const slotTimeId = timeSlotMap.get(slotTime);
+          if (slotTimeId) {
+            timeSlotInserts.push({
+              schedule_id: scheduleData.id,
+              day,
+              slot_time_id: slotTimeId,
+            });
+          }
+        }
+      }
+    } else {
+      // If specific days, use each day's specific time slots
+      for (const [day, isAvailable] of Object.entries(days)) {
+        if (isAvailable && selectedTimeSlots[day]) {
+          for (const slotTime of selectedTimeSlots[day]) {
+            const slotTimeId = timeSlotMap.get(slotTime);
+            if (slotTimeId) {
+              timeSlotInserts.push({
+                schedule_id: scheduleData.id,
+                day,
+                slot_time_id: slotTimeId,
+              });
+            }
+          }
         }
       }
     }
+
+    console.log('timeSlotInserts', timeSlotInserts);
 
     // Insert all time slots
     if (timeSlotInserts.length > 0) {

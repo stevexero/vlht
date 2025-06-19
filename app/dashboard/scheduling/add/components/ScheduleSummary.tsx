@@ -63,6 +63,8 @@ export default function ScheduleSummary({ userId }: { userId: string }) {
       formData.append('selectedTimeSlots', JSON.stringify(selectedTimeSlots));
       formData.append('allAvailableDays', allAvailableDays.toString());
 
+      console.log('selectedTimeSlots being sent:', selectedTimeSlots);
+
       const result = await addSchedule(formData);
 
       if (result.success) {

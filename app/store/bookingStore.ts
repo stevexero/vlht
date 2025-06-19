@@ -22,6 +22,9 @@ interface BookingStoreProps {
 
   guests: GuestInfo[];
   setGuests: (guests: GuestInfo[]) => void;
+
+  selectedTourista: string;
+  setSelectedTourista: (selectedTourista: string) => void;
 }
 
 export const useBookingStore = create<BookingStoreProps>((set) => ({
@@ -39,4 +42,7 @@ export const useBookingStore = create<BookingStoreProps>((set) => ({
 
   guests: [],
   setGuests: (guests) => set({ guests }),
+
+  selectedTourista: '',
+  setSelectedTourista: (selectedTourista) => set({ selectedTourista }),
 }));

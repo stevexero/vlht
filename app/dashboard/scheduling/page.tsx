@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import MainPageHeading from '@/app/ui/dashboard/pageHeadings/MainPageHeading';
 import DashboardCard from '@/app/ui/dashboard/card/DashboardCard';
 import { getAllSchedules, getUserSchedules } from '@/app/lib/data/scheduleData';
+import { fetchUserProfileByUserId } from '@/app/lib/data/userData';
 import Link from 'next/link';
 
 export default async function page() {
@@ -23,6 +24,29 @@ export default async function page() {
   const otherSchedules = allSchedules.data?.filter(
     (schedule) => schedule.user_id !== user.id
   );
+
+  // Fetch profiles for all other schedule users
+  const userProfiles = new Map();
+  if (otherSchedules) {
+    const uniqueUserIds = [
+      ...new Set(otherSchedules.map((schedule) => schedule.user_id)),
+    ];
+
+    const profilePromises = uniqueUserIds.map(async (userId) => {
+      const profileResult = await fetchUserProfileByUserId(userId);
+      if (profileResult.success && profileResult.data) {
+        return { userId, profile: profileResult.data };
+      }
+      return { userId, profile: null };
+    });
+
+    const profileResults = await Promise.all(profilePromises);
+    profileResults.forEach(({ userId, profile }) => {
+      if (profile) {
+        userProfiles.set(userId, profile);
+      }
+    });
+  }
 
   return (
     <div className='w-full ml-8 md:ml-72 mt-24 md:mt-16'>
@@ -112,32 +136,50 @@ export default async function page() {
                 ))}
               </div>
             ) : (
-              <p className='text-gray-500 text-center py-4'>
-                No schedules created yet. Click &quot;Add Schedule&quot; to
-                create one.
-              </p>
+              <div className='flex flex-row items-center gap-4'>
+                <p className='text-lg font-bold text-gray-600 text-shadow-2xs text-shadow-white'>
+                  No schedules created yet.
+                </p>
+                <Link
+                  href='/dashboard/scheduling/add'
+                  className='text-lg font-bold text-blue-600 text-shadow-2xs text-shadow-white underline'
+                >
+                  Create one now!
+                </Link>
+              </div>
             )}
             {/* </DashboardCard> */}
 
-            <DashboardCard title='Other Schedules' containerStyles='mt-4'>
+            <div className='flex flex-col gap-8'>
+              <h3 className='text-xl font-bold text-gray-600 text-shadow-2xs text-shadow-white -mb-8'>
+                Other Schedules
+              </h3>
               {otherSchedules && otherSchedules.length > 0 ? (
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                   {otherSchedules.map((schedule) => (
-                    <div
+                    // <div
+                    //   key={schedule.id}
+                    //   className='border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow'
+                    // >
+                    <DashboardCard
                       key={schedule.id}
-                      className='border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow'
+                      title={schedule.name}
+                      containerStyles='mt-4'
                     >
-                      <h3 className='font-semibold text-lg text-gray-800'>
+                      {/* <h3 className='font-semibold text-lg text-gray-800'>
                         {schedule.name}
-                      </h3>
+                      </h3> */}
                       <div className='mt-2 space-y-1 text-sm text-gray-600'>
+                        <p>
+                          Tourista:{' '}
+                          {userProfiles.get(schedule.user_id)?.first_name}
+                        </p>
                         <p>Duration: {schedule.duration} minutes</p>
-                        <p>Interval: {schedule.time_interval} minutes</p>
                         <p>
                           Time: {schedule.start_time} - {schedule.end_time}
                         </p>
                         <div className='mt-2'>
-                          <p className='font-medium'>Available Days:</p>
+                          <p className='font-medium'>Days:</p>
                           <div className='flex flex-wrap gap-2 mt-1'>
                             {Object.entries({
                               monday: schedule.monday,
@@ -160,7 +202,7 @@ export default async function page() {
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </DashboardCard>
                   ))}
                 </div>
               ) : (
@@ -168,7 +210,7 @@ export default async function page() {
                   No other schedules available.
                 </p>
               )}
-            </DashboardCard>
+            </div>
           </div>
         </div>
       )}
