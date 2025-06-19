@@ -80,7 +80,7 @@ export default function ReviewsClient({ reviews }: { reviews: Review[] }) {
   }
 
   return (
-    <div className='relative w-full min-h-[80rem] md:min-h-[50rem] xl:min-h-[40rem] overflow-hidden'>
+    <div className='relative w-full min-h-[90rem] md:min-h-[50rem] xl:min-h-[40rem] overflow-hidden'>
       <div
         className='absolute inset-0'
         style={{
