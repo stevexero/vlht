@@ -9,6 +9,7 @@ import {
   getAllScheduleTimeSlotsByScheduleId,
   getAllTimeSlots,
 } from './lib/data/scheduleData';
+import Newsletter from './components/newsletter/Newsletter';
 
 export default async function Home() {
   const response = await getDaysOfAvailability();
@@ -48,12 +49,13 @@ export default async function Home() {
       <ZHero />
       <ZSubhero />
       <ZReviews />
-      <Story
+      <Newsletter
         daysOfAvailability={daysOfAvailability}
         timeSlotsReference={timeSlotsReference}
         schedules={schedules}
         scheduleTimeSlots={scheduleTimeSlots}
       />
+      <Story />
       <BottomHero />
     </main>
   );
