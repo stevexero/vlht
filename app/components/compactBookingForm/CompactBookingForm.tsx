@@ -252,7 +252,7 @@ export default function CompactBookingForm({
   }, [daysOfAvailability]);
 
   return (
-    <div className='absolute -top-0 xl:-top-16 w-full max-w-7xl bg-gradient-to-r from-amber-200 via-amber-100 via-60% to-amber-200 shadow-2xl shadow-blue-950/50 rounded-md z-10 border-2 border-amber-300'>
+    <div className='absolute -top-0 xl:-top-16 w-full max-w-7xl bg-gradient-to-r from-amber-200 via-amber-100 via-60% to-amber-200 shadow-2xl shadow-blue-950/50 rounded-md z-10 border-2 border-yellow-300'>
       <form className='flex flex-col gap-2 p-4' onSubmit={handleSubmit}>
         <label className='text-blue-950 text-sm text-center font-semibold'>
           BOOK A TOUR FOR {month.toUpperCase()}

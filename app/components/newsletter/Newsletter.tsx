@@ -83,9 +83,9 @@ const Newsletter: FC<{
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
       }}
-      className='w-full border-t-0 xl:border-t-8 xl:border-t-yellow-600'
+      className='w-full border-y-8 border-y-yellow-600'
     >
-      <div className='w-full max-w-7xl mx-auto relative'>
+      <div className='w-full max-w-7xl mx-auto relative -mt-8 xl:mt-0'>
         <CompactBookingForm
           daysOfAvailability={daysOfAvailability}
           timeSlotsReference={timeSlotsReference}

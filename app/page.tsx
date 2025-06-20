@@ -10,6 +10,7 @@ import {
   getAllTimeSlots,
 } from './lib/data/scheduleData';
 import Newsletter from './components/newsletter/Newsletter';
+import ZStory from './components/story/ZStory';
 
 export default async function Home() {
   const response = await getDaysOfAvailability();
@@ -55,6 +56,7 @@ export default async function Home() {
         schedules={schedules}
         scheduleTimeSlots={scheduleTimeSlots}
       />
+      <ZStory />
       <Story />
       <BottomHero />
     </main>
